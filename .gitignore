@@ -13,3 +13,62 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Flutter specific
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.lock
+
+# Android specific
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+
+# iOS specific
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata
+*.xcworkspace
+Pods/
+.symlinks/
+**/Flutter/App.framework
+**/Flutter/Flutter.framework
+**/Flutter/Flutter.podspec
+**/Flutter/Generated.xcconfig
+**/Flutter/app.flx
+**/Flutter/app.zip
+**/Flutter/flutter_assets/
+ServiceDefinitions.json
+Runner.xcworkspace
+
+# Web specific
+lib/generated_plugin_registrant.dart
+
+# Test coverage
+coverage/
+
+# Hive
+*.hive
+*.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API Keys and secrets
+secrets.dart
+api_keys.dart
+
+
