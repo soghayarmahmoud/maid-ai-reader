@@ -40,6 +40,9 @@
 - [ ] Implement persistent storage for notes
 - [ ] Add more comprehensive tests
 
+> 📝 **For detailed issue descriptions and tracking**, see [GITHUB_ISSUES.md](GITHUB_ISSUES.md)  
+> 🚀 **To create these as GitHub issues**, run `./scripts/create_issues.sh`
+
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
