@@ -62,3 +62,13 @@ coverage/
 *.hive
 *.lock
 
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API Keys and secrets
+secrets.dart
+api_keys.dart
+
+
