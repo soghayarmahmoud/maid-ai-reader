@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../core/constants/app_strings.dart';
@@ -206,7 +208,7 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
             ),
           Expanded(
             child: SfPdfViewer.file(
-              widget.filePath,
+              widget.filePath as File,
               controller: _pdfViewerController,
               onPageChanged: _onPageChanged,
               onDocumentLoaded: _onDocumentLoaded,
