@@ -85,7 +85,7 @@ class _TranslateSheetState extends State<TranslateSheet> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedLanguage,
+                initialValue: _selectedLanguage,
                 decoration: const InputDecoration(
                   labelText: AppStrings.selectLanguage,
                   border: OutlineInputBorder(),

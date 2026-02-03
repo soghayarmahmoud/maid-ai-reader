@@ -116,7 +116,7 @@ class _NotesPageState extends State<NotesPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.note_add_outlined,
                     size: 64,
                     color: AppColors.grey400,
@@ -140,41 +140,44 @@ class _NotesPageState extends State<NotesPage> {
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
+              physics: const ClampingScrollPhysics(),
               itemCount: pdfNotes.length,
               itemBuilder: (context, index) {
                 final note = pdfNotes[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: ListTile(
-                    title: Text(note.title),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (note.content.isNotEmpty) ...[
+                return RepaintBoundary(
+                  child: Card(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: ListTile(
+                      title: Text(note.title),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (note.content.isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              note.content,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                           const SizedBox(height: 4),
                           Text(
-                            note.content,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                            'Page ${note.pageNumber}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.grey600,
+                            ),
                           ),
                         ],
-                        const SizedBox(height: 4),
-                        Text(
-                          'Page ${note.pageNumber}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.grey600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: AppColors.error),
-                      onPressed: () {
-                        setState(() {
-                          _notes.remove(note);
-                        });
-                      },
+                      ),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: AppColors.error),
+                        onPressed: () {
+                          setState(() {
+                            _notes.remove(note);
+                          });
+                        },
+                      ),
                     ),
                   ),
                 );

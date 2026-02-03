@@ -107,22 +107,25 @@ class _LibraryPageState extends State<LibraryPage> {
                     const SizedBox(height: 16),
                     ListView.builder(
                       shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
                       itemCount: _recentFiles.length,
                       itemBuilder: (context, index) {
                         final file = _recentFiles[index];
                         final fileName = file.split('/').last;
-                        return ListTile(
-                          leading: const Icon(Icons.picture_as_pdf),
-                          title: Text(fileName),
-                          subtitle: Text(file),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PdfReaderPage(filePath: file),
-                              ),
-                            );
-                          },
+                        return RepaintBoundary(
+                          child: ListTile(
+                            leading: const Icon(Icons.picture_as_pdf),
+                            title: Text(fileName),
+                            subtitle: Text(file),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PdfReaderPage(filePath: file),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       },
                     ),

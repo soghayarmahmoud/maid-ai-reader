@@ -78,7 +78,7 @@ class _AiChatPageState extends State<AiChatPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.chat_bubble_outline,
                           size: 64,
                           color: AppColors.grey400,
@@ -95,10 +95,13 @@ class _AiChatPageState extends State<AiChatPage> {
                   )
                 : ListView.builder(
                     padding: const EdgeInsets.all(16),
+                    physics: const ClampingScrollPhysics(),
                     itemCount: _messages.length,
                     itemBuilder: (context, index) {
                       final message = _messages[index];
-                      return _MessageBubble(message: message);
+                      return RepaintBoundary(
+                        child: _MessageBubble(message: message),
+                      );
                     },
                   ),
           ),

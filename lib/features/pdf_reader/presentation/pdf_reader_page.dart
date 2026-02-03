@@ -58,37 +58,42 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
 
   Future<void> _jumpToPage() async {
     final controller = TextEditingController(text: _currentPage.toString());
-    final result = await showDialog<int>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(AppStrings.jumpToPage),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            hintText: '${AppStrings.page} (1-$_totalPages)',
+    try {
+      final result = await showDialog<int>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(AppStrings.jumpToPage),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: '${AppStrings.page} (1-$_totalPages)',
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(AppStrings.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                final page = int.tryParse(controller.text);
+                if (page != null && page >= 1 && page <= _totalPages) {
+                  Navigator.pop(context, page);
+                }
+              },
+              child: const Text(AppStrings.ok),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text(AppStrings.cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              final page = int.tryParse(controller.text);
-              if (page != null && page >= 1 && page <= _totalPages) {
-                Navigator.pop(context, page);
-              }
-            },
-            child: const Text(AppStrings.ok),
-          ),
-        ],
-      ),
-    );
+      );
 
-    if (result != null) {
-      _pdfViewerController.jumpToPage(result);
+      if (result != null) {
+        _pdfViewerController.jumpToPage(result);
+      }
+    } finally {
+      // Dispose controller to prevent memory leak
+      controller.dispose();
     }
   }
 
@@ -207,16 +212,21 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
               ),
             ),
           Expanded(
-            child: SfPdfViewer.file(
-              widget.filePath as File,
-              controller: _pdfViewerController,
-              onPageChanged: _onPageChanged,
-              onDocumentLoaded: _onDocumentLoaded,
-              onTextSelectionChanged: (PdfTextSelectionChangedDetails details) {
-                setState(() {
-                  _selectedText = details.selectedText;
-                });
-              },
+            child: RepaintBoundary(
+              child: SfPdfViewer.file(
+                File(widget.filePath),
+                controller: _pdfViewerController,
+                onPageChanged: _onPageChanged,
+                onDocumentLoaded: _onDocumentLoaded,
+                onTextSelectionChanged: (PdfTextSelectionChangedDetails details) {
+                  // Optimize: only call setState if text actually changed
+                  if (_selectedText != details.selectedText) {
+                    setState(() {
+                      _selectedText = details.selectedText;
+                    });
+                  }
+                },
+              ),
             ),
           ),
           Container(
