@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../../../core/utils/permissions.dart';
 import '../data/models/reading_progress_model.dart';
 
@@ -26,8 +24,7 @@ class PdfImportService {
     await initialize();
 
     // Check and request permissions
-    final permissionResult =
-        await _permissionService.requestStoragePermission();
+    final permissionResult = await _permissionService.requestStoragePermission();
 
     if (permissionResult == PermissionResult.permanentlyDenied) {
       return PdfImportResult.failure(
@@ -102,8 +99,7 @@ class PdfImportService {
     await initialize();
 
     // Check permissions
-    final permissionResult =
-        await _permissionService.requestStoragePermission();
+    final permissionResult = await _permissionService.requestStoragePermission();
 
     if (permissionResult != PermissionResult.granted) {
       return [
