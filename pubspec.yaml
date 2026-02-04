@@ -43,6 +43,7 @@ dependencies:
   
   # AI Integration
   google_generative_ai: ^0.4.6
+  google_ml_kit: ^0.18.0  # OCR and ML features
   
   # Utilities
   uuid: ^4.2.2
@@ -52,6 +53,13 @@ dependencies:
   connectivity_plus: ^6.1.0
   package_info_plus: ^8.1.0
   cached_network_image: ^3.4.1
+  
+  # Voice & Speech
+  speech_to_text: ^7.0.0
+  flutter_tts: ^4.2.0
+  
+  # PDF Rendering
+  pdf_render: ^1.4.12
   
   # Security
   local_auth: ^2.3.0
