@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_colors.dart';
 
@@ -143,9 +144,27 @@ ${widget.text}
               ),
               if (_translatedText != null) ...[
                 const SizedBox(height: 16),
-                Text(
-                  AppStrings.translatedText,
-                  style: Theme.of(context).textTheme.titleMedium,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppStrings.translatedText,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.copy, size: 20),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: _translatedText!));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Translation copied to clipboard!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      tooltip: 'Copy to clipboard',
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -155,7 +174,7 @@ ${widget.text}
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: AppColors.primary),
                   ),
-                  child: Text(
+                  child: SelectableText(
                     _translatedText!,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),

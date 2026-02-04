@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../pdf_reader/presentation/pdf_reader_page.dart';
+import 'dart:io';
+import '../../core/constants/app_strings.dart';
+import '../../core/constants/app_colors.dart';
+import '../../core/widgets/error_states.dart';
+import '../pdf_reader/presentation/pdf_reader_page.dart';
+import 'data/models/reading_progress_model.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
@@ -11,10 +14,45 @@ class LibraryPage extends StatefulWidget {
   State<LibraryPage> createState() => _LibraryPageState();
 }
 
-class _LibraryPageState extends State<LibraryPage> {
-  final List<String> _recentFiles = [];
+class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStateMixin {
+  final List<File> _recentFiles = [];
+  late TabController _tabController;
+  bool _isLoading = false;
+  final ReadingProgressRepository _progressRepo = ReadingProgressRepository();
 
-  Future<void> _openPdfFile() async {
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _initializeProgress();
+  }
+
+  Future<void> _initializeProgress() async {
+    try {
+      await _progressRepo.initialize();
+      _loadRecentFiles();
+    } catch (e) {
+      print('Error initializing progress: $e');
+    }
+  }
+
+  void _loadRecentFiles() {
+    final recentProgress = _progressRepo.getRecentFiles(limit: 20);
+    setState(() {
+      _recentFiles.clear();
+      for (var progress in recentProgress) {
+        if (File(progress.pdfPath).existsSync()) {
+          _recentFiles.add(File(progress.pdfPath));
+        }
+      }
+    });
+  }
+
+  Future<void> _pickFile() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -22,120 +60,143 @@ class _LibraryPageState extends State<LibraryPage> {
       );
 
       if (result != null && result.files.single.path != null) {
-        final filePath = result.files.single.path!;
-        if (mounted) {
-          setState(() {
-            if (!_recentFiles.contains(filePath)) {
-              _recentFiles.insert(0, filePath);
-              if (_recentFiles.length > 10) {
-                _recentFiles.removeLast();
-              }
-            }
-          });
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PdfReaderPage(filePath: filePath),
-            ),
-          );
-        }
+        final file = File(result.files.single.path!);
+        await _openPdf(file);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error opening file: $e')),
+          SnackBar(content: Text('Error picking file: $e')),
         );
       }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  Future<void> _openPdf(File file) async {
+    if (!await file.exists()) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('File not found')),
+        );
+      }
+      return;
+    }
+
+    // Save to recent files
+    if (!_recentFiles.contains(file)) {
+      setState(() {
+        _recentFiles.insert(0, file);
+        if (_recentFiles.length > 20) {
+          _recentFiles.removeLast();
+        }
+      });
+    }
+
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PdfReaderPage(filePath: file.path),
+        ),
+      ).then((_) => _loadRecentFiles());
+    }
+  }
+
+  String _getFileName(File file) {
+    return file.path.split(Platform.pathSeparator).last;
+  }
+
+  String _getFileSize(File file) {
+    final bytes = file.lengthSync();
+    if (bytes < 1024) return '$bytes B';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.appFullName),
-      ),
-      body: _recentFiles.isEmpty ? _buildEmptyState() : _buildRecentFilesGrid(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openPdfFile,
-        icon: const Icon(Icons.file_open),
-        label: const Text(AppStrings.openPdf),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.picture_as_pdf,
-            size: 100,
-            color: AppColors.primary.withOpacity(0.5),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Welcome to ${AppStrings.appName}',
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            AppStrings.appFullName,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: _openPdfFile,
-            icon: const Icon(Icons.file_open),
-            label: const Text(AppStrings.openPdf),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            ),
+        title: const Text(AppStrings.appName),
+        elevation: 0,
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(icon: Icon(Icons.history), text: 'Recent'),
+            Tab(icon: Icon(Icons.folder), text: 'All Files'),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
           ),
         ],
       ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildRecentTab(),
+          _buildAllFilesTab(),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _isLoading ? null : _pickFile,
+        icon: _isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : const Icon(Icons.add),
+        label: Text(_isLoading ? 'Opening...' : 'Open PDF'),
+      ),
     );
   }
 
-  Widget _buildRecentFilesGrid() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            'Recent Files',
-            style: Theme.of(context).textTheme.titleLarge,
+  Widget _buildRecentTab() {
+    if (_recentFiles.isEmpty) {
+      return EmptyStateWidget(
+        title: 'No Recent Files',
+        message: 'Open a PDF to get started.\nYour recently viewed files will appear here.',
+        icon: Icons.description_outlined,
+        onAction: _pickFile,
+        actionButtonText: 'Open PDF',
+        actionIcon: Icons.add,
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _recentFiles.length,
+      itemBuilder: (context, index) {
+        final file = _recentFiles[index];
+        final progress = _progressRepo.getProgress(file.path);
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: _recentFiles.length,
-            itemBuilder: (context, index) {
-              final file = _recentFiles[index];
-              final fileName = file.split('/').last;
-              return Card(
-                elevation: 4,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PdfReaderPage(filePath: file),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: InkWell(
+            onTap: () => _openPdf(file),
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
                       Expanded(
                         child: Container(
