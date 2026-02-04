@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 
 /// Gesture-Enabled PDF Viewer Wrapper
@@ -117,7 +119,7 @@ class _AdvancedGestureDetectorState extends State<AdvancedGestureDetector> {
   static const double _swipeThreshold = 50.0;
   static const double _velocityThreshold = 300.0;
 
-  double _initialScale = 1.0;
+  final double _initialScale = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +327,7 @@ class _GestureControlSettingsState extends State<GestureControlSettings> {
                     'Quick zoom toggle',
                   ),
                   _buildGestureGuideItem(
-                    Icons.press_and_hold,
+                    Icons.ads_click,
                     'Long Press',
                     'Show context menu',
                   ),

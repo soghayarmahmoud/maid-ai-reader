@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
 
 /// Advanced Search Widget with filters and options
 class AdvancedSearchBar extends StatefulWidget {

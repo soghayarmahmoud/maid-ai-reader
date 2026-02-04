@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -74,7 +76,7 @@ class AppTheme {
       background: backgroundColor,
       surface: surfaceColor,
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: surfaceColor,
@@ -135,7 +137,7 @@ class AppTheme {
       surface: darkSurfaceColor,
     ),
     scaffoldBackgroundColor: darkBackgroundColor,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: darkCardColor,
@@ -203,7 +205,7 @@ class AppTheme {
         surface: warmColor.withOpacity(0.9),
       ),
       scaffoldBackgroundColor: warmColor,
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         color: warmColor.withOpacity(0.8),

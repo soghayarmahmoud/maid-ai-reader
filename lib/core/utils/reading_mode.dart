@@ -6,7 +6,7 @@ class ReadingMode {
   factory ReadingMode() => _instance;
   ReadingMode._internal();
 
-  bool _isDistract ionFree = false;
+  bool _isDistractionFree = false;
   bool _isNightMode = false;
   double _nightModeWarmth = 0.5;
   double _brightness = 1.0;

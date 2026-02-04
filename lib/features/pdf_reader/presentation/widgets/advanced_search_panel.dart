@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/advanced_search_service.dart';
-import '../../../core/widgets/glass_widgets.dart';
+import 'package:maid_ai_reader/core/widgets/glass_widgets.dart';
+import 'package:maid_ai_reader/features/pdf_reader/services/advanced_search_service.dart';
+
 
 /// Advanced Search Panel
 class AdvancedSearchPanel extends StatefulWidget {
@@ -17,15 +18,16 @@ class AdvancedSearchPanel extends StatefulWidget {
   State<AdvancedSearchPanel> createState() => _AdvancedSearchPanelState();
 }
 
-class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTickerProviderStateMixin {
+class _AdvancedSearchPanelState extends State<AdvancedSearchPanel>
+    with SingleTickerProviderStateMixin {
   final AdvancedSearchService _searchService = AdvancedSearchService();
   final TextEditingController _searchController = TextEditingController();
   late TabController _tabController;
-  
+
   List<SearchResult> _results = [];
   bool _isSearching = false;
   SearchType _searchType = SearchType.basic;
-  
+
   // Search options
   bool _caseSensitive = false;
   bool _wholeWord = false;
@@ -255,7 +257,8 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
         const SizedBox(height: 16),
 
         // Common patterns
-        const Text('Common Patterns:', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Common Patterns:',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -289,7 +292,8 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Icon(Icons.document_scanner, size: 48, color: Theme.of(context).primaryColor),
+              Icon(Icons.document_scanner,
+                  size: 48, color: Theme.of(context).primaryColor),
               const SizedBox(height: 12),
               const Text(
                 'OCR Search',
@@ -304,7 +308,6 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
             ],
           ),
         ),
-
         const SizedBox(height: 16),
         TextField(
           controller: _searchController,
@@ -314,14 +317,12 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
           ),
           onSubmitted: (_) => _performSearch(),
         ),
-
         const SizedBox(height: 16),
         ElevatedButton.icon(
           onPressed: _isSearching ? null : _performSearch,
           icon: const Icon(Icons.search),
           label: const Text('Search with OCR'),
         ),
-
         const SizedBox(height: 16),
         _buildResults(),
       ],
@@ -336,7 +337,8 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              Icon(Icons.psychology, size: 48, color: Theme.of(context).primaryColor),
+              Icon(Icons.psychology,
+                  size: 48, color: Theme.of(context).primaryColor),
               const SizedBox(height: 12),
               const Text(
                 'Semantic Search',
@@ -351,7 +353,6 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
             ],
           ),
         ),
-
         const SizedBox(height: 16),
         TextField(
           controller: _searchController,
@@ -362,14 +363,12 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
           maxLines: 3,
           onSubmitted: (_) => _performSearch(),
         ),
-
         const SizedBox(height: 16),
         ElevatedButton.icon(
           onPressed: _isSearching ? null : _performSearch,
           icon: const Icon(Icons.search),
           label: const Text('Semantic Search'),
         ),
-
         const SizedBox(height: 16),
         _buildResults(),
       ],
@@ -425,7 +424,7 @@ class _AdvancedSearchPanelState extends State<AdvancedSearchPanel> with SingleTi
                   overflow: TextOverflow.ellipsis,
                 ),
                 trailing: result.isOcrResult
-                    ? const Icon Icons.document_scanner, size: 20)
+                    ? const Icon(Icons.document_scanner, size: 20)
                     : result.semanticScore != null
                         ? Text('${(result.semanticScore! * 100).round()}%')
                         : null,

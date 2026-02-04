@@ -108,7 +108,7 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
                       onTap: _showInsertImageDialog,
                     ),
                     _buildActionTile(
-                      icon: Icons.watermark,
+                      icon: Icons.waterfall_chart,
                       title: 'Add Watermark',
                       subtitle: 'Add text watermark',
                       onTap: _showWatermarkDialog,

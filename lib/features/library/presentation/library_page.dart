@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:maid_ai_reader/core/constants/app_colors.dart';
+import 'package:maid_ai_reader/core/constants/app_strings.dart';
+import 'package:maid_ai_reader/core/widgets/error_states.dart';
+import 'package:maid_ai_reader/features/library/data/models/reading_progress_model.dart';
+import 'package:maid_ai_reader/features/pdf_reader/presentation/pdf_reader_page.dart';
 import 'dart:io';
-import '../../core/constants/app_strings.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/widgets/error_states.dart';
-import '../pdf_reader/presentation/pdf_reader_page.dart';
-import 'data/models/reading_progress_model.dart';
+
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
@@ -181,6 +182,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
       itemBuilder: (context, index) {
         final file = _recentFiles[index];
         final progress = _progressRepo.getProgress(file.path);
+        final fileName = _getFileName(file);
 
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
@@ -227,7 +229,7 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              file,
+                              file.path,
                               style: Theme.of(context).textTheme.bodySmall,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -237,12 +239,23 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
                       ),
                     ],
                   ),
-                ),
-              );
+                ]),
+              )));
             },
-          ),
-        ),
-      ],
+          );
+        
+      
+    
+  }
+
+  Widget _buildAllFilesTab() {
+    return EmptyStateWidget(
+      title: 'All Files',
+      message: 'File browsing feature coming soon.',
+      icon: Icons.folder_outlined,
+      onAction: _pickFile,
+      actionButtonText: 'Open PDF',
+      actionIcon: Icons.add,
     );
   }
 }

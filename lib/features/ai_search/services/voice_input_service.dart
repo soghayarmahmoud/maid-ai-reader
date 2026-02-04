@@ -1,5 +1,6 @@
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter/material.dart';
 
 /// Voice Input Service
 /// Handles voice-to-text for AI queries and text-to-speech for reading
@@ -133,7 +134,6 @@ class VoiceInputService {
 }
 
 /// Voice Input Widget for AI Chat
-import 'package:flutter/material.dart';
 
 class VoiceInputButton extends StatefulWidget {
   final Function(String) onResult;

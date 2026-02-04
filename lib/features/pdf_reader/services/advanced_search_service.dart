@@ -80,8 +80,6 @@ class AdvancedSearchService {
             isOcrResult: true,
           ));
         }
-
-        await page.close();
       }
 
       await document.dispose();

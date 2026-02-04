@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:flutter/material.dart';
 
 part 'annotation_model.g.dart';
 
@@ -94,7 +95,6 @@ class AnnotationModel extends HiveObject {
 }
 
 // Annotation entity (from domain layer)
-import 'package:flutter/material.dart';
 
 class Annotation {
   final String id;

@@ -34,7 +34,7 @@ class NoteModel extends HiveObject {
   @HiveField(9)
   String? voiceNotePath; // Path to voice recording if any
 
-  Note Model({
+  NoteModel({
     required this.id,
     required this.title,
     required this.content,

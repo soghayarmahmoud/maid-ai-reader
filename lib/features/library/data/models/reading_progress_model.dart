@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 part 'reading_progress_model.g.dart';
 
@@ -59,7 +60,6 @@ class ReadingProgressModel extends HiveObject {
 }
 
 // Repository for reading progress
-import 'package:hive_flutter/hive_flutter.dart';
 
 class ReadingProgressRepository {
   static const String _boxName = 'reading_progress';

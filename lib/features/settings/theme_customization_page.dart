@@ -1,6 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../widgets/glass_widgets.dart';
+import 'package:maid_ai_reader/core/constants/app_theme.dart' hide AppTheme;
+import 'package:maid_ai_reader/core/theme/app_theme.dart';
+import 'package:maid_ai_reader/core/widgets/glass_widgets.dart';
 
 /// Theme Customization Page
 class ThemeCustomizationPage extends StatefulWidget {
@@ -29,11 +32,11 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
         padding: const EdgeInsets.all(16),
         children: [
           // Theme Presets
-          ModernSectionHeader(
+         const ModernSectionHeader(
             title: 'Color Themes',
             icon: Icons.palette,
           ),
-          
+
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -82,7 +85,9 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
                       Text(
                         preset.name,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                         textAlign: TextAlign.center,
                       ),
@@ -104,11 +109,11 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
           const SizedBox(height: 32),
 
           // Custom Colors
-          ModernSectionHeader(
+       const ModernSectionHeader(
             title: 'Custom Colors',
             icon: Icons.color_lens,
           ),
-          
+
           GlassCard(
             child: Column(
               children: [
@@ -151,11 +156,11 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
           const SizedBox(height: 32),
 
           // Page Transitions
-          ModernSectionHeader(
+         const ModernSectionHeader(
             title: 'Page Transitions',
             icon: Icons.animation,
           ),
-          
+
           GlassCard(
             child: Column(
               children: TransitionType.values.map((type) {
@@ -168,7 +173,8 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
                     // Save to preferences
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('${_getTransitionName(type)} transition selected'),
+                        content: Text(
+                            '${_getTransitionName(type)} transition selected'),
                         duration: const Duration(seconds: 1),
                       ),
                     );
@@ -181,11 +187,11 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
           const SizedBox(height: 32),
 
           // Preview
-          ModernSectionHeader(
+         const ModernSectionHeader(
             title: 'Preview',
             icon: Icons.visibility,
           ),
-          
+
           GlassCard(
             child: Column(
               children: [
@@ -204,7 +210,8 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
                 const SizedBox(height: 12),
                 Chip(
                   label: const Text('Chip Preview'),
-                  avatar: Icon(Icons.check, color: AppTheme.primaryColor, size: 18),
+                  avatar:
+                      Icon(Icons.check, color: AppTheme.primaryColor, size: 18),
                 ),
                 const SizedBox(height: 12),
                 LinearProgressIndicator(
@@ -251,7 +258,8 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
     );
   }
 
-  Widget _buildColorPicker(String label, Color color, ValueChanged<Color> onColorChanged) {
+  Widget _buildColorPicker(
+      String label, Color color, ValueChanged<Color> onColorChanged) {
     return ListTile(
       title: Text(label),
       trailing: GestureDetector(
@@ -261,7 +269,8 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
             context: context,
             builder: (context) => AlertDialog(
               title: Text('Pick $label'),
-              content: const Text('Color picker would go here.\nUse flutter_colorpicker package.'),
+              content: const Text(
+                  'Color picker would go here.\nUse flutter_colorpicker package.'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),

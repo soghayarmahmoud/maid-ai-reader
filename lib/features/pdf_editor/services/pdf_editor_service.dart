@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'dart:typed_data';
 
@@ -133,8 +134,13 @@ class PdfEditorService {
         final File pdfFile = File(path);
         final PdfDocument document = PdfDocument(inputBytes: await pdfFile.readAsBytes());
         
-        // Import all pages
-        mergedDocument.importPages(document, 0, document.pages.count - 1);
+        // Import all pages by copying them
+        for (int i = 0; i < document.pages.count; i++) {
+          mergedDocument.pages.add().graphics.drawPdfTemplate(
+            document.pages[i].createTemplate(),
+            const Offset(0, 0),
+          );
+        }
         document.dispose();
       }
 
@@ -165,8 +171,13 @@ class PdfEditorService {
         final PdfDocument splitDoc = PdfDocument();
         final int endPage = splitPoints[i];
 
-        // Import pages
-        splitDoc.importPages(sourceDoc, startPage, endPage);
+        // Copy pages to new document
+        for (int pageIndex = startPage; pageIndex <= endPage && pageIndex < sourceDoc.pages.count; pageIndex++) {
+          splitDoc.pages.add().graphics.drawPdfTemplate(
+            sourceDoc.pages[pageIndex].createTemplate(),
+            const Offset(0, 0),
+          );
+        }
 
         // Save
         final String outputPath = '$outputDir/split_${i + 1}.pdf';
@@ -317,10 +328,7 @@ class PdfEditorService {
       // Create new page with cropped size
       final PdfPage originalPage = document.pages[pageNumber];
       final PdfDocument croppedDoc = PdfDocument();
-      final PdfPage newPage = croppedDoc.pages.add();
-      
-      newPage.setSize(Size(cropBox.width, cropBox.height));
-      
+      final PdfPage newPage = croppedDoc.pages.add();      
       // Draw cropped portion
       newPage.graphics.drawPdfTemplate(
         originalPage.createTemplate(),
@@ -329,7 +337,7 @@ class PdfEditorService {
 
       // Replace original page
       document.pages.removeAt(pageNumber);
-      document.pages.insert(pageNumber, newPage);
+      document.pages.insert(pageNumber, newPage as Size?);
 
       final List<int> bytes = await document.save();
       document.dispose();
