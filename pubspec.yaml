@@ -12,12 +12,17 @@ dependencies:
   
   # UI
   cupertino_icons: ^1.0.6
+  flutter_animate: ^4.5.0
+  shimmer: ^3.0.0
+  glassmorphism: ^3.0.0
   
   # PDF
   syncfusion_flutter_pdfviewer: ^32.1.25
   syncfusion_flutter_pdf: ^32.1.25
+  syncfusion_flutter_signaturepad: ^32.1.25
   file_picker: ^10.3.10
   path_provider: ^2.1.1
+  pdf_render: ^1.4.12
   
   # State Management
   flutter_bloc: ^9.1.1
@@ -30,14 +35,45 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   shared_preferences: ^2.2.2
+  sqflite: ^2.3.3+1
   
   # Network
   http: ^1.1.2
   dio: ^5.4.0
   
+  # AI Integration
+  google_generative_ai: ^0.4.6
+  
   # Utilities
   uuid: ^4.2.2
   intl: ^0.20.2
+  url_launcher: ^6.3.1
+  share_plus: ^10.1.1
+  connectivity_plus: ^6.1.0
+  package_info_plus: ^8.1.0
+  cached_network_image: ^3.4.1
+  
+  # Security
+  local_auth: ^2.3.0
+  flutter_secure_storage: ^9.2.2
+  crypto: ^3.0.5
+  
+  # Export & Sharing
+  printing: ^5.14.2
+  pdf: ^3.11.1
+  
+  # ML & OCR
+  google_ml_kit: ^0.18.0
+  
+  # Drawing & Annotations
+  flutter_colorpicker: ^1.1.0
+  
+  # Text to Speech
+  flutter_tts: ^4.1.0
+  
+  # Audio Recording (for voice notes)
+  record: ^5.1.2
+  audioplayers: ^6.1.0
   
   # Permissions
   permission_handler: ^12.0.1

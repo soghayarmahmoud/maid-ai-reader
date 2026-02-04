@@ -80,6 +80,19 @@ class _NotesPageState extends State<NotesPage> {
                 Navigator.pop(context);
               }
             },
+            /*
+             # MAID AI Reader - Comprehensive Feature Enhancement
+
+            ## AI Features & PDF Analysis
+            - [/] Integrate real AI service (Google Gemini) instead of mock service
+            - [/] Add AI-powered PDF analysis and summarization
+            - [/] Implement intelligent reading assistance (explain paragraphs, simplify text)
+            - [ ] Add Google search integration from selected PDF text
+            - [ ] Implement AI-powered context-aware scrolling suggestions
+            - [ ] Add voice-to-text for AI queries
+            - [ ] Add AI-powered document comparison
+            - [ ] Implement smart content extraction and categorization
+            */
             child: const Text(AppStrings.save),
           ),
         ],

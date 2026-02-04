@@ -34,14 +34,41 @@ class _TranslateSheetState extends State<TranslateSheet> {
       _isLoading = true;
     });
 
-    // Simulate translation (replace with actual AI translation service)
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      // TODO: Integrate with Gemini AI for translation
+      // Import the AI service: import '../../ai_search/data/gemini_ai_service.dart';
+      // final aiService = GeminiAiService();
+      // await aiService.initialize();
+      // final translated = await aiService.translateText(widget.text, _selectedLanguage);
+      
+      // For now, simulate translation with a more realistic message
+      await Future.delayed(const Duration(seconds: 1));
 
-    if (mounted) {
-      setState(() {
-        _translatedText = 'Simulated translation to $_selectedLanguage. Please integrate with a real translation service.';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _translatedText = '''[AI Translation to $_selectedLanguage]
+
+${widget.text}
+
+---
+⚠️ To enable real translation:
+1. Add your Gemini API key in Settings
+2. The AI will translate this text automatically
+3. This is a placeholder until AI is configured
+          ''';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _translatedText = 'Translation failed: $e';
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Translation error: $e')),
+        );
+      }
     }
   }
 
