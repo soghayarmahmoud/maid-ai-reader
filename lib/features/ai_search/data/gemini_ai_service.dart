@@ -8,22 +8,11 @@ class GeminiAiService {
   GenerativeModel? _model;
   ChatSession? _chatSession;
   
-  /// TODO: Add your Gemini API key here
-  /// Get your free API key from: https://makersuite.google.com/app/apikey
-  /// 
-  /// IMPORTANT: For production, store this in flutter_secure_storage
-  /// or environment variables, NOT hardcoded!
-  static const String _apiKey = 'YOUR_GEMINI_API_KEY_HERE'; // TODO: Replace with your API key
+  /// Gemini API Key - Configured for MAID AI Reader
+  static const String _apiKey = 'AIzaSyBePZxVvjM96UB24s9SwbCyQxEWpQ7MyeQ';
   
   /// Initialize the AI service
   Future<void> initialize() async {
-    if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      print('⚠️ WARNING: Gemini API key not configured!');
-      print('📝 Add your API key in lib/features/ai_search/data/gemini_ai_service.dart');
-      print('🔗 Get free API key: https://makersuite.google.com/app/apikey');
-      return;
-    }
-    
     try {
       _model = GenerativeModel(
         model: 'gemini-1.5-flash', // Free tier model
@@ -69,21 +58,12 @@ class GeminiAiService {
       startChatSession();
     }
     
-    if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      return '⚠️ API key not configured. Please add your Gemini API key to use AI features.\n\n'
-          'Get your free API key from: https://makersuite.google.com/app/apikey\n\n'
-          'The free tier includes:\n'
-          '• 15 requests per minute\n'
-          '• 1500 requests per day\n'
-          '• No credit card required';
-    }
-    
     try {
       final response = await _chatSession!.sendMessage(Content.text(message));
       return response.text ?? 'No response from AI';
     } catch (e) {
       print('❌ Error sending chat message: $e');
-      return 'Error: Unable to get AI response. Please check your API key and internet connection.';
+      return 'Error: Unable to get AI response. Please check your internet connection.';
     }
   }
   
@@ -93,9 +73,7 @@ class GeminiAiService {
       await initialize();
     }
     
-    if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      return '⚠️ API key not configured. Please add your Gemini API key to use AI features.';
-    }
+
     
     try {
       final prompt = pdfContext != null
@@ -118,9 +96,7 @@ class GeminiAiService {
       await initialize();
     }
     
-    if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      return '⚠️ API key not configured.';
-    }
+
     
     try {
       // Truncate PDF text if too long (to avoid token limits)
@@ -157,9 +133,7 @@ Please provide the analysis in a clear, structured format.
       await initialize();
     }
     
-    if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      return '⚠️ API key not configured.';
-    }
+
     
     try {
       final prompt = 'Summarize this text concisely:\n\n$text';
@@ -179,9 +153,7 @@ Please provide the analysis in a clear, structured format.
       await initialize();
     }
     
-    if (_apiKey == 'YOUR_GEMINI_API_KEY_HERE') {
-      return '⚠️ API key not configured.';
-    }
+
     
     try {
       final prompt = 'Explain this text in simple, easy-to-understand language:\n\n$text';

@@ -1,6 +1,6 @@
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'dart:io';
-import 'package:pdf_render/pdf_render.dart' as pdf_render;
+// import 'package:pdf_render/pdf_render.dart' as pdf_render; // Removed due to compatibility issues
 
 /// Advanced Search Service
 /// Handles all search operations including OCR, regex, semantic search
@@ -45,49 +45,10 @@ class AdvancedSearchService {
     required String pdfPath,
     required String searchTerm,
   }) async {
-    try {
-      // TODO: Extract images from PDF pages
-      // For each page:
-      // 1. Render PDF page to image
-      // 2. Run OCR on image
-      // 3. Search in OCR text
-
-      final document = await pdf_render.PdfDocument.openFile(pdfPath);
-      final results = <SearchResult>[];
-
-      for (int i = 0; i < document.pageCount; i++) {
-        final page = await document.getPage(i + 1);
-        final pageImage = await page.render();
-        
-        // Convert to input image for ML Kit
-        final inputImage = InputImage.fromFilePath(pdfPath); // Simplified
-        
-        // Run OCR
-        final recognizedText = await _textRecognizer.processImage(inputImage);
-        
-        // Search in OCR text
-        final text = recognizedText.text.toLowerCase();
-        final term = searchTerm.toLowerCase();
-        
-        if (text.contains(term)) {
-          final index = text.indexOf(term);
-          results.add(SearchResult(
-            text: searchTerm,
-            startIndex: index,
-            endIndex: index + searchTerm.length,
-            pageNumber: i + 1,
-            context: _getContext(text, index, index + searchTerm.length),
-            isOcrResult: true,
-          ));
-        }
-      }
-
-      await document.dispose();
-      return results;
-    } catch (e) {
-      print('OCR search error: $e');
-      return [];
-    }
+    // TODO: Implement OCR search using syncfusion_flutter_pdfviewer
+    // Previous pdf_render implementation removed due to compatibility issues
+    print('OCR search not yet implemented. Use syncfusion_flutter_pdfviewer for PDF rendering.');
+    return [];
   }
 
   /// Semantic search using AI

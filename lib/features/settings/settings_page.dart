@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_colors.dart';
 
 class SettingsPage extends StatefulWidget {
   final VoidCallback onToggleTheme;
+  final Function(Locale) onLanguageChanged;
 
-  const SettingsPage({super.key, required this.onToggleTheme});
+  const SettingsPage({
+    super.key,
+    required this.onToggleTheme,
+    required this.onLanguageChanged,
+  });
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
-  
   // Settings state
   bool _isDarkMode = false;
   String _language = 'English';
   bool _autoSave = true;
   bool _showThumbnails = true;
-  String _aiProvider = 'Google Gemini';
-  String _apiKey = '';
   String _defaultZoom = 'Fit Width';
   Color _defaultHighlightColor = Colors.yellow;
   bool _enableBiometric = false;
@@ -32,19 +32,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadSettings();
     _loadVersion();
-  }
-
-  Future<void> _loadSettings() async {
-    try {
-      final apiKey = await _secureStorage.read(key: 'gemini_api_key') ?? '';
-      setState(() {
-        _apiKey = apiKey;
-      });
-    } catch (e) {
-      print('Error loading settings: $e');
-    }
   }
 
   Future<void> _loadVersion() async {
@@ -58,21 +46,6 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> _saveApiKey(String key) async {
-    try {
-      await _secureStorage.write(key: 'gemini_api_key', value: key);
-      setState(() {
-        _apiKey = key;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('API key saved securely!')),
-        );
-      }
-    } catch (e) {
-      print('Error saving API key: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,69 +56,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(
         children: [
-          // AI Settings Section
-          _buildSectionHeader('🤖 AI Settings'),
-          _buildCard(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.smart_toy),
-                title: const Text('AI Provider'),
-                subtitle: Text(_aiProvider),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: _showAiProviderDialog,
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.key),
-                title: const Text('API Key'),
-                subtitle: Text(_apiKey.isEmpty 
-                    ? 'Not configured' 
-                    : '••••••${_apiKey.substring(_apiKey.length - 4)}'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (_apiKey.isNotEmpty)
-                      IconButton(
-                        icon: const Icon(Icons.delete, size: 18),
-                        onPressed: () => _saveApiKey(''),
-                      ),
-                    const Icon(Icons.arrow_forward_ios, size: 16),
-                  ],
-                ),
-                onTap: _showApiKeyDialog,
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.info_outline),
-                title: const Text('Get Free API Key'),
-                subtitle: const Text('Click to get Google Gemini API key'),
-                trailing: const Icon(Icons.open_in_new, size: 16),
-                onTap: () {
-                  // TODO: Open browser to https://makersuite.google.com/app/apikey
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Get API Key'),
-                      content: const SelectableText(
-                        'Visit: https://makersuite.google.com/app/apikey\n\n'
-                        'Free tier includes:\n'
-                        '• 15 requests per minute\n'
-                        '• 1500 requests per day\n'
-                        '• No credit card required',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Close'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-
           // Appearance Section
           _buildSectionHeader('🎨 Appearance'),
           _buildCard(
@@ -379,86 +289,9 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void _showAiProviderDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select AI Provider'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile(
-              title: const Text('Google Gemini (Recommended)'),
-              subtitle: const Text('Free tier available'),
-              value: 'Google Gemini',
-              groupValue: _aiProvider,
-              onChanged: (value) {
-                setState(() {
-                  _aiProvider = value as String;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            RadioListTile(
-              title: const Text('OpenAI GPT'),
-              subtitle: const Text('Paid only'),
-              value: 'OpenAI GPT',
-              groupValue: _aiProvider,
-              onChanged: (value) {
-                setState(() {
-                  _aiProvider = value as String;
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  void _showApiKeyDialog() {
-    final controller = TextEditingController(text: _apiKey);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Enter API Key'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'API Key',
-                hintText: 'Paste your Gemini API key here',
-                border: OutlineInputBorder(),
-              ),
-              obscureText: true,
-              maxLines: 2,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Your API key is stored securely and never leaves your device.',
-              style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _saveApiKey(controller.text);
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
-  }
+
+
 
   void _showZoomDialog() {
     showDialog(
@@ -495,20 +328,18 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLanguageDialog() {
+    final languageMap = {
+      'English': 'en',
+      'Arabic': 'ar',
+    };
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Select Language'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            'English',
-            'Spanish',
-            'French',
-            'German',
-            'Arabic',
-            'Chinese',
-          ].map((lang) {
+          children: ['English', 'Arabic'].map((lang) {
             return RadioListTile(
               title: Text(lang),
               value: lang,
@@ -517,6 +348,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() {
                   _language = value as String;
                 });
+                final languageCode = languageMap[value] ?? 'en';
+                widget.onLanguageChanged(Locale(languageCode));
                 Navigator.pop(context);
               },
             );
