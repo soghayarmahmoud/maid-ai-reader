@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:maid_ai_reader/l10n/app_localizations.dart';
 import 'core/constants/app_theme.dart';
 import 'core/constants/app_strings.dart';
 import 'features/library/presentation/library_page.dart';
 import 'features/settings/settings_page.dart';
 import 'features/help/help_page.dart';
+import 'package:flutter/services.dart';
+import 'features/pdf_reader/presentation/pdf_reader_page.dart';
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final String? initialFilePath;
+
+  const MyApp({super.key, this.initialFilePath});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -17,6 +23,32 @@ class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.light;
   int _selectedIndex = 0;
   Locale _locale = const Locale('en'); // Default to English
+
+  @override
+  void initState() {
+    super.initState();
+    // Handle file from intent if present
+    if (widget.initialFilePath != null && widget.initialFilePath!.isNotEmpty) {
+      print('📄 File opened from external app: ${widget.initialFilePath}');
+    }
+
+    // After first frame, ask native for any shared file (avoids MissingPluginException)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      const platform = MethodChannel('com.maid/file_intent');
+      try {
+        final shared = await platform.invokeMethod<String>('getSharedFile');
+        if (shared != null && mounted) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => PdfReaderPage(filePath: shared),
+          ));
+        }
+      } catch (e) {
+        // Safe to ignore; native side may not implement the channel on some platforms
+        debugPrint(
+            'No shared file available or platform channel not implemented: $e');
+      }
+    });
+  }
 
   void _toggleTheme() {
     setState(() {
@@ -56,6 +88,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: _themeMode,
       locale: _locale,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -64,6 +97,15 @@ class _MyAppState extends State<MyApp> {
         Locale('en'), // English
         Locale('ar'), // Arabic
       ],
+      // Builder to handle RTL based on locale
+      builder: (context, child) {
+        return Directionality(
+          textDirection: _locale.languageCode == 'ar'
+              ? TextDirection.rtl
+              : TextDirection.ltr,
+          child: child!,
+        );
+      },
       home: Scaffold(
         body: _pages[_selectedIndex],
         bottomNavigationBar: Container(

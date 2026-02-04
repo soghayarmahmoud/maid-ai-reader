@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:maid_ai_reader/features/security/presentation/pin_setup_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_colors.dart';
 
@@ -33,6 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadVersion();
+    _loadSettings();
   }
 
   Future<void> _loadVersion() async {
@@ -46,6 +49,25 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final pinEnabled = prefs.getBool('app_lock_enabled') ?? false;
+    final biometricAvailable = false;
+
+    setState(() {
+      _appLockEnabled = pinEnabled;
+      _enableBiometric = prefs.getBool('biometric_enabled') ?? false;
+
+      // Load highlight color
+      final colorValue = prefs.getInt('highlight_color') ?? Colors.yellow.value;
+      _defaultHighlightColor = Color(colorValue);
+    });
+  }
+
+  Future<void> _saveBiometricSetting(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('biometric_enabled', value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,11 +175,30 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: const Text('App Lock'),
                 subtitle: const Text('Require PIN to open app'),
                 value: _appLockEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    _appLockEnabled = value;
-                  });
-                  // TODO: Show PIN setup dialog
+                onChanged: (value) async {
+                  if (value) {
+                    // Show PIN setup
+                    final result = await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PinSetupPage(),
+                      ),
+                    );
+                    if (result == true) {
+                      setState(() {
+                        _appLockEnabled = true;
+                      });
+                    }
+                  } else {
+                    // Disable PIN
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('app_lock_enabled', false);
+                    setState(() {
+                      _appLockEnabled = false;
+                      _enableBiometric = false;
+                    });
+                    await _saveBiometricSetting(false);
+                  }
                 },
               ),
               const Divider(height: 1),
@@ -166,11 +207,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: const Text('Biometric Authentication'),
                 subtitle: const Text('Use fingerprint or face ID'),
                 value: _enableBiometric,
-                onChanged: _appLockEnabled ? (value) {
-                  setState(() {
-                    _enableBiometric = value;
-                  });
-                } : null,
+                onChanged: _appLockEnabled
+                    ? (value) {
+                        setState(() {
+                          _enableBiometric = value;
+                        });
+                      }
+                    : null,
               ),
             ],
           ),
@@ -289,10 +332,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-
-
-
-
   void _showZoomDialog() {
     showDialog(
       context: context,
@@ -332,7 +371,7 @@ class _SettingsPageState extends State<SettingsPage> {
       'English': 'en',
       'Arabic': 'ar',
     };
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -461,7 +500,8 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           const SizedBox(width: 12),
-          Expanded(child: Text(description, style: const TextStyle(fontSize: 13))),
+          Expanded(
+              child: Text(description, style: const TextStyle(fontSize: 13))),
         ],
       ),
     );

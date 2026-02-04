@@ -47,7 +47,8 @@ class AdvancedSearchService {
   }) async {
     // TODO: Implement OCR search using syncfusion_flutter_pdfviewer
     // Previous pdf_render implementation removed due to compatibility issues
-    print('OCR search not yet implemented. Use syncfusion_flutter_pdfviewer for PDF rendering.');
+    print(
+        'OCR search not yet implemented. Use syncfusion_flutter_pdfviewer for PDF rendering.');
     return [];
   }
 
@@ -64,10 +65,10 @@ class AdvancedSearchService {
 
       for (int i = 0; i < chunks.length; i++) {
         final chunk = chunks[i];
-        
+
         // Use AI to check semantic similarity
-        final similarity = await aiSimilarityCheck(query, chunk);
-        
+        await aiSimilarityCheck(query, chunk);
+
         // If similarity is high, add to results
         // TODO: Implement actual AI similarity check
         // For now, use simple keyword matching as placeholder
@@ -75,7 +76,8 @@ class AdvancedSearchService {
           results.add(SearchResult(
             text: query,
             startIndex: chunk.toLowerCase().indexOf(query.toLowerCase()),
-            endIndex: chunk.toLowerCase().indexOf(query.toLowerCase()) + query.length,
+            endIndex:
+                chunk.toLowerCase().indexOf(query.toLowerCase()) + query.length,
             pageNumber: i ~/ 10, // Rough estimate
             context: chunk,
             semanticScore: 0.8, // Placeholder
@@ -103,7 +105,7 @@ class AdvancedSearchService {
       try {
         // TODO: Extract text from PDF
         final text = await _extractTextFromPdf(pdfPath);
-        
+
         final pdfResults = await basicSearch(
           text: text,
           searchTerm: searchTerm,
@@ -139,8 +141,9 @@ class AdvancedSearchService {
       if (wholeWord) {
         final isStartValid = index == 0 || !_isWordChar(searchText[index - 1]);
         final endIndex = index + term.length;
-        final isEndValid = endIndex >= searchText.length || !_isWordChar(searchText[endIndex]);
-        
+        final isEndValid =
+            endIndex >= searchText.length || !_isWordChar(searchText[endIndex]);
+
         if (!isStartValid || !isEndValid) {
           index++;
           continue;
@@ -183,10 +186,11 @@ class AdvancedSearchService {
     return text.substring(0, index).split('\n').length ~/ 50;
   }
 
-  String _getContext(String text, int start, int end, {int contextLength = 100}) {
+  String _getContext(String text, int start, int end,
+      {int contextLength = 100}) {
     final contextStart = (start - contextLength).clamp(0, text.length);
     final contextEnd = (end + contextLength).clamp(0, text.length);
-    
+
     return text.substring(contextStart, contextEnd);
   }
 

@@ -7,7 +7,6 @@ import 'package:maid_ai_reader/features/library/data/models/reading_progress_mod
 import 'package:maid_ai_reader/features/pdf_reader/presentation/pdf_reader_page.dart';
 import 'dart:io';
 
-
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
 
@@ -15,7 +14,8 @@ class LibraryPage extends StatefulWidget {
   State<LibraryPage> createState() => _LibraryPageState();
 }
 
-class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStateMixin {
+class _LibraryPageState extends State<LibraryPage>
+    with SingleTickerProviderStateMixin {
   final List<File> _recentFiles = [];
   late TabController _tabController;
   bool _isLoading = false;
@@ -111,13 +111,6 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     return file.path.split(Platform.pathSeparator).last;
   }
 
-  String _getFileSize(File file) {
-    final bytes = file.lengthSync();
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,6 +119,20 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
+          indicatorColor: Theme.of(context).colorScheme.primary,
+          indicatorWeight: 3,
+          labelColor: Theme.of(context).colorScheme.primary,
+          unselectedLabelColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.grey.shade700
+              : Colors.grey.shade400,
+          labelStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+          ),
           tabs: const [
             Tab(icon: Icon(Icons.history), text: 'Recent'),
             Tab(icon: Icon(Icons.folder), text: 'All Files'),
@@ -168,7 +175,8 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
     if (_recentFiles.isEmpty) {
       return EmptyStateWidget(
         title: 'No Recent Files',
-        message: 'Open a PDF to get started.\nYour recently viewed files will appear here.',
+        message:
+            'Open a PDF to get started.\nYour recently viewed files will appear here.',
         icon: Icons.description_outlined,
         onAction: _pickFile,
         actionButtonText: 'Open PDF',
@@ -185,67 +193,66 @@ class _LibraryPageState extends State<LibraryPage> with SingleTickerProviderStat
         final fileName = _getFileName(file);
 
         return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: InkWell(
-            onTap: () => _openPdf(file),
-            borderRadius: BorderRadius.circular(12),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12)),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.picture_as_pdf,
-                              size: 48,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+            margin: const EdgeInsets.only(bottom: 12),
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: InkWell(
+                onTap: () => _openPdf(file),
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            Text(
-                              fileName,
-                              style: Theme.of(context).textTheme.titleMedium,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(12)),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.picture_as_pdf,
+                                    size: 48,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              file.path,
-                              style: Theme.of(context).textTheme.bodySmall,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    fileName,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    file.path,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                ]),
-              )));
-            },
-          );
-        
-      
-    
+                      ]),
+                )));
+      },
+    );
   }
 
   Widget _buildAllFilesTab() {

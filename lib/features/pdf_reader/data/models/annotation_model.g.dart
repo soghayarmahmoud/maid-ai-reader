@@ -28,9 +28,9 @@ class AnnotationModelAdapter extends TypeAdapter<AnnotationModel> {
       height: fields[8] as double,
       createdAt: fields[9] as DateTime,
       text: fields[10] as String?,
-      drawingPoints: (fields[11] as List?)
-          ?.map((dynamic e) => (e as Map).cast<String, double>())
-          ?.toList(),
+      drawingPoints: (fields[11] as List? ?? [])
+          .map((dynamic e) => (e as Map).cast<String, double>())
+          .toList(),
     );
   }
 

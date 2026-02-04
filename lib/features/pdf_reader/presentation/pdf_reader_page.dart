@@ -149,34 +149,6 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
     );
   }
 
-  void _showCommentDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Comment'),
-        content: TextField(
-          controller: _commentController,
-          decoration: const InputDecoration(hintText: 'Enter your comment'),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Add comment annotation
-              Navigator.pop(context);
-              _commentController.clear();
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _toggleBookmarks() {
     setState(() {
       _showBookmarks = !_showBookmarks;
