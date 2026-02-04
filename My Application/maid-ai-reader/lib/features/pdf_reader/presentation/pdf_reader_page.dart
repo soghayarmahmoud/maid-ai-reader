@@ -8,6 +8,7 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../ai_search/presentation/ai_chat_page.dart';
+import '../../library/data/models/reading_progress_model.dart';
 import '../../smart_notes/presentation/notes_page.dart';
 import '../../translator/presentation/translate_sheet.dart';
 import '../services/pdf_text_search_service.dart';
@@ -29,8 +30,10 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   late PdfTextSearchService _searchService;
+  late ReadingProgressRepository _progressRepository;
   int _currentPage = 1;
   int _totalPages = 0;
+  int? _initialPage; // Page to restore on document load
   bool _isSearching = false;
   bool _showToolbar = false;
   bool _showResultsPanel = false;
@@ -43,7 +46,20 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
   void initState() {
     super.initState();
     _searchService = PdfTextSearchService(pdfController: _pdfViewerController);
+    _progressRepository = ReadingProgressRepository();
+    _initializeProgress();
     _focusNode.requestFocus();
+  }
+
+  Future<void> _initializeProgress() async {
+    await _progressRepository.initialize();
+    // Load saved progress
+    final savedProgress = _progressRepository.getProgress(widget.filePath);
+    if (savedProgress != null && mounted) {
+      setState(() {
+        _initialPage = savedProgress.currentPage;
+      });
+    }
   }
 
   @override
@@ -60,12 +76,38 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
     setState(() {
       _currentPage = details.newPageNumber;
     });
+    // Save reading progress
+    _saveReadingProgress();
   }
 
   void _onDocumentLoaded(PdfDocumentLoadedDetails details) {
     setState(() {
       _totalPages = details.document.pages.count;
     });
+    // Restore to saved page if available
+    if (_initialPage != null &&
+        _initialPage! > 0 &&
+        _initialPage! <= _totalPages) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _pdfViewerController.jumpToPage(_initialPage!);
+      });
+    }
+    // Save initial progress
+    _saveReadingProgress();
+  }
+
+  void _saveReadingProgress() {
+    if (_totalPages == 0) return;
+
+    final fileName = widget.filePath.split(Platform.pathSeparator).last;
+    final progress = ReadingProgressModel(
+      pdfPath: widget.filePath,
+      currentPage: _currentPage,
+      totalPages: _totalPages,
+      lastOpened: DateTime.now(),
+      fileName: fileName,
+    );
+    _progressRepository.saveProgress(progress);
   }
 
   void _previousPage() {
