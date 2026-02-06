@@ -161,7 +161,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pdfFeaturesDesc =>
-      '• التعليقات التوضيحية بألوان متعددة\n• دردشة وتحليل بالذكاء الاصطناعي\n• ملاحظات ذكية مع تلخيص بالذكاء الاصطناعي\n• ترجمة النص\n• تكامل بحث Google\n• تصدير المحادثات والملاحظات\n• بحث متقدم مع المرشحات\n• الإشارات المرجعية والتنقل';
+      '• التعليقات التوضيحية بألوان متعددة\\n• دردشة وتحليل بالذكاء الاصطناعي\\n• ملاحظات ذكية مع تلخيص بالذكاء الاصطناعي\\n• ترجمة النص\\n• تكامل بحث Google\\n• تصدير المحادثات والملاحظات\\n• بحث متقدم مع المرشحات\\n• الإشارات المرجعية والتنقل';
 
   @override
   String get myLibrary => 'مكتبتي';
@@ -234,4 +234,280 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chinese => '中文';
+
+  @override
+  String get sectionAppearance => '🎨 المظهر';
+
+  @override
+  String get sectionReadingPreferences => '📖 تفضيلات القراءة';
+
+  @override
+  String get sectionLanguage => '🌍 اللغة';
+
+  @override
+  String get sectionSecurity => '🔒 الأمان والخصوصية';
+
+  @override
+  String get sectionStorage => '💾 التخزين';
+
+  @override
+  String get sectionAbout => 'ℹ️ حول';
+
+  @override
+  String get zoom50 => '50%';
+
+  @override
+  String get zoom75 => '75%';
+
+  @override
+  String get zoom100 => '100%';
+
+  @override
+  String get zoom150 => '150%';
+
+  @override
+  String get zoom200 => '200%';
+
+  @override
+  String get recent => 'الأخيرة';
+
+  @override
+  String get allFiles => 'جميع الملفات';
+
+  @override
+  String get openPdf => 'فتح PDF';
+
+  @override
+  String get opening => 'جارٍ الفتح...';
+
+  @override
+  String get noRecentFiles => 'لا توجد ملفات حديثة';
+
+  @override
+  String get noRecentFilesMsg =>
+      'افتح ملف PDF للبدء.\\nستظهر الملفات التي شاهدتها مؤخرًا هنا.';
+
+  @override
+  String get allFilesTitle => 'جميع الملفات';
+
+  @override
+  String get allFilesMsg => 'ميزة تصفح الملفات قادمة قريبًا.';
+
+  @override
+  String get fileNotFound => 'الملف غير موجود';
+
+  @override
+  String errorPickingFile(String error) {
+    return 'خطأ في اختيار الملف: $error';
+  }
+
+  @override
+  String get annotationsMultipleColors => 'التعليقات التوضيحية بألوان متعددة';
+
+  @override
+  String get aiPoweredChat => 'دردشة وتحليل بالذكاء الاصطناعي';
+
+  @override
+  String get smartNotes => 'ملاحظات ذكية مع تلخيص بالذكاء الاصطناعي';
+
+  @override
+  String get textTranslation => 'ترجمة النص';
+
+  @override
+  String get googleSearch => 'تكامل بحث Google';
+
+  @override
+  String get exportConversations => 'تصدير المحادثات والملاحظات';
+
+  @override
+  String get advancedSearch => 'بحث متقدم مع المرشحات';
+
+  @override
+  String get bookmarksNavigation => 'الإشارات المرجعية والتنقل';
+
+  @override
+  String get ctrlF => 'Ctrl + F';
+
+  @override
+  String get ctrlH => 'Ctrl + H';
+
+  @override
+  String get ctrlU => 'Ctrl + U';
+
+  @override
+  String get ctrlS => 'Ctrl + S';
+
+  @override
+  String get ctrlD => 'Ctrl + D';
+
+  @override
+  String get ctrlT => 'Ctrl + T';
+
+  @override
+  String get ctrlB => 'Ctrl + B';
+
+  @override
+  String get arrowKeys => '← →';
+
+  @override
+  String get pinSetup => 'إعداد رقم التعريف الشخصي';
+
+  @override
+  String get enterNewPin => 'أدخل رقم التعريف الشخصي الجديد';
+
+  @override
+  String get confirmPin => 'تأكيد رقم التعريف الشخصي';
+
+  @override
+  String get pinMismatch => 'أرقام التعريف الشخصية غير متطابقة';
+
+  @override
+  String get pinTooShort => 'يجب أن يكون رقم التعريف الشخصي 4 أرقام على الأقل';
+
+  @override
+  String get pinSetupSuccess => 'تم تعيين رقم التعريف الشخصي بنجاح';
+
+  @override
+  String get enterPin => 'أدخل رقم التعريف الشخصي';
+
+  @override
+  String get wrongPin => 'رقم التعريف الشخصي خاطئ';
+
+  @override
+  String get pinLocked => 'محاولات كثيرة جدًا. حاول مرة أخرى لاحقًا.';
+
+  @override
+  String get biometricPrompt => 'المصادقة لإلغاء القفل';
+
+  @override
+  String get biometricSuccess => 'نجحت المصادقة';
+
+  @override
+  String get biometricFailed => 'فشلت المصادقة';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get addNote => 'إضافة ملاحظة';
+
+  @override
+  String get editNote => 'تحرير ملاحظة';
+
+  @override
+  String get deleteNote => 'حذف ملاحظة';
+
+  @override
+  String get noteTitle => 'عنوان الملاحظة';
+
+  @override
+  String get noteContent => 'محتوى الملاحظة';
+
+  @override
+  String get saveNote => 'حفظ الملاحظة';
+
+  @override
+  String get deleteNoteConfirm => 'هل أنت متأكد أنك تريد حذف هذه الملاحظة؟';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get annotations => 'التعليقات التوضيحية';
+
+  @override
+  String get highlight => 'تمييز';
+
+  @override
+  String get underline => 'تسطير';
+
+  @override
+  String get strikethrough => 'يتوسطه خط';
+
+  @override
+  String get draw => 'رسم';
+
+  @override
+  String get eraser => 'ممحاة';
+
+  @override
+  String get colorPicker => 'منتقي الألوان';
+
+  @override
+  String get thickness => 'السُمك';
+
+  @override
+  String get opacity => 'الشفافية';
+
+  @override
+  String get page => 'صفحة';
+
+  @override
+  String get of => 'من';
+
+  @override
+  String get goToPage => 'الذهاب إلى الصفحة';
+
+  @override
+  String get pageNumber => 'رقم الصفحة';
+
+  @override
+  String get invalidPage => 'رقم صفحة غير صالح';
+
+  @override
+  String get share => 'مشاركة';
+
+  @override
+  String get export => 'تصدير';
+
+  @override
+  String get print => 'طباعة';
+
+  @override
+  String get download => 'تنزيل';
+
+  @override
+  String get error => 'خطأ';
+
+  @override
+  String get success => 'نجاح';
+
+  @override
+  String get warning => 'تحذير';
+
+  @override
+  String get info => 'معلومات';
+
+  @override
+  String get ok => 'موافق';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get loading => 'جارٍ التحميل...';
+
+  @override
+  String get pleaseWait => 'يرجى الانتظار...';
+
+  @override
+  String get done => 'تم';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get edit => 'تحرير';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get remove => 'إزالة';
 }

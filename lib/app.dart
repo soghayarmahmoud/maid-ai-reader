@@ -96,6 +96,10 @@ class _MyAppState extends State<MyApp> {
       supportedLocales: const [
         Locale('en'), // English
         Locale('ar'), // Arabic
+        Locale('es'), // Spanish
+        Locale('fr'), // French
+        Locale('de'), // German
+        Locale('zh'), // Chinese (Simplified)
       ],
       // Builder to handle RTL based on locale
       builder: (context, child) {
@@ -119,21 +123,21 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           child: BottomNavigationBar(
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home),
-                label: 'Home',
+                icon: const Icon(Icons.home_outlined),
+                activeIcon: const Icon(Icons.home),
+                label: AppLocalizations.of(context)!.home,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.settings_outlined),
-                activeIcon: Icon(Icons.settings),
-                label: 'Settings',
+                icon: const Icon(Icons.settings_outlined),
+                activeIcon: const Icon(Icons.settings),
+                label: AppLocalizations.of(context)!.settings,
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.help_outline),
-                activeIcon: Icon(Icons.help),
-                label: 'Help',
+                icon: const Icon(Icons.help_outline),
+                activeIcon: const Icon(Icons.help),
+                label: AppLocalizations.of(context)!.help,
               ),
             ],
             currentIndex: _selectedIndex,

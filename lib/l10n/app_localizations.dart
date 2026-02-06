@@ -6,7 +6,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_ar.dart';
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +99,11 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('ar'),
-    Locale('en')
+    Locale('de'),
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('zh')
   ];
 
   /// No description provided for @appName.
@@ -401,7 +409,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfFeaturesDesc.
   ///
   /// In en, this message translates to:
-  /// **'• Annotations with multiple colors\n• AI-powered chat and analysis\n• Smart notes with AI summarization\n• Text translation\n• Google search integration\n• Export conversations and notes\n• Advanced search with filters\n• Bookmarks and navigation'**
+  /// **'• Annotations with multiple colors\\n• AI-powered chat and analysis\\n• Smart notes with AI summarization\\n• Text translation\\n• Google search integration\\n• Export conversations and notes\\n• Advanced search with filters\\n• Bookmarks and navigation'**
   String get pdfFeaturesDesc;
 
   /// No description provided for @myLibrary.
@@ -547,6 +555,552 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'中文'**
   String get chinese;
+
+  /// No description provided for @sectionAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'🎨 Appearance'**
+  String get sectionAppearance;
+
+  /// No description provided for @sectionReadingPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'📖 Reading Preferences'**
+  String get sectionReadingPreferences;
+
+  /// No description provided for @sectionLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'🌍 Language'**
+  String get sectionLanguage;
+
+  /// No description provided for @sectionSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'🔒 Security & Privacy'**
+  String get sectionSecurity;
+
+  /// No description provided for @sectionStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'💾 Storage'**
+  String get sectionStorage;
+
+  /// No description provided for @sectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'ℹ️ About'**
+  String get sectionAbout;
+
+  /// No description provided for @zoom50.
+  ///
+  /// In en, this message translates to:
+  /// **'50%'**
+  String get zoom50;
+
+  /// No description provided for @zoom75.
+  ///
+  /// In en, this message translates to:
+  /// **'75%'**
+  String get zoom75;
+
+  /// No description provided for @zoom100.
+  ///
+  /// In en, this message translates to:
+  /// **'100%'**
+  String get zoom100;
+
+  /// No description provided for @zoom150.
+  ///
+  /// In en, this message translates to:
+  /// **'150%'**
+  String get zoom150;
+
+  /// No description provided for @zoom200.
+  ///
+  /// In en, this message translates to:
+  /// **'200%'**
+  String get zoom200;
+
+  /// No description provided for @recent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recent;
+
+  /// No description provided for @allFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'All Files'**
+  String get allFiles;
+
+  /// No description provided for @openPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Open PDF'**
+  String get openPdf;
+
+  /// No description provided for @opening.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening...'**
+  String get opening;
+
+  /// No description provided for @noRecentFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No Recent Files'**
+  String get noRecentFiles;
+
+  /// No description provided for @noRecentFilesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a PDF to get started.\\nYour recently viewed files will appear here.'**
+  String get noRecentFilesMsg;
+
+  /// No description provided for @allFilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All Files'**
+  String get allFilesTitle;
+
+  /// No description provided for @allFilesMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'File browsing feature coming soon.'**
+  String get allFilesMsg;
+
+  /// No description provided for @fileNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'File not found'**
+  String get fileNotFound;
+
+  /// No description provided for @errorPickingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Error picking file: {error}'**
+  String errorPickingFile(String error);
+
+  /// No description provided for @annotationsMultipleColors.
+  ///
+  /// In en, this message translates to:
+  /// **'Annotations with multiple colors'**
+  String get annotationsMultipleColors;
+
+  /// No description provided for @aiPoweredChat.
+  ///
+  /// In en, this message translates to:
+  /// **'AI-powered chat and analysis'**
+  String get aiPoweredChat;
+
+  /// No description provided for @smartNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart notes with AI summarization'**
+  String get smartNotes;
+
+  /// No description provided for @textTranslation.
+  ///
+  /// In en, this message translates to:
+  /// **'Text translation'**
+  String get textTranslation;
+
+  /// No description provided for @googleSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Google search integration'**
+  String get googleSearch;
+
+  /// No description provided for @exportConversations.
+  ///
+  /// In en, this message translates to:
+  /// **'Export conversations and notes'**
+  String get exportConversations;
+
+  /// No description provided for @advancedSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced search with filters'**
+  String get advancedSearch;
+
+  /// No description provided for @bookmarksNavigation.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks and navigation'**
+  String get bookmarksNavigation;
+
+  /// No description provided for @ctrlF.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + F'**
+  String get ctrlF;
+
+  /// No description provided for @ctrlH.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + H'**
+  String get ctrlH;
+
+  /// No description provided for @ctrlU.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + U'**
+  String get ctrlU;
+
+  /// No description provided for @ctrlS.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + S'**
+  String get ctrlS;
+
+  /// No description provided for @ctrlD.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + D'**
+  String get ctrlD;
+
+  /// No description provided for @ctrlT.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + T'**
+  String get ctrlT;
+
+  /// No description provided for @ctrlB.
+  ///
+  /// In en, this message translates to:
+  /// **'Ctrl + B'**
+  String get ctrlB;
+
+  /// No description provided for @arrowKeys.
+  ///
+  /// In en, this message translates to:
+  /// **'← →'**
+  String get arrowKeys;
+
+  /// No description provided for @pinSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN Setup'**
+  String get pinSetup;
+
+  /// No description provided for @enterNewPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new PIN'**
+  String get enterNewPin;
+
+  /// No description provided for @confirmPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm PIN'**
+  String get confirmPin;
+
+  /// No description provided for @pinMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'PINs do not match'**
+  String get pinMismatch;
+
+  /// No description provided for @pinTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN must be at least 4 digits'**
+  String get pinTooShort;
+
+  /// No description provided for @pinSetupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN successfully set'**
+  String get pinSetupSuccess;
+
+  /// No description provided for @enterPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter PIN'**
+  String get enterPin;
+
+  /// No description provided for @wrongPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong PIN'**
+  String get wrongPin;
+
+  /// No description provided for @pinLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Try again later.'**
+  String get pinLocked;
+
+  /// No description provided for @biometricPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate to unlock'**
+  String get biometricPrompt;
+
+  /// No description provided for @biometricSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication successful'**
+  String get biometricSuccess;
+
+  /// No description provided for @biometricFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication failed'**
+  String get biometricFailed;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @addNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Note'**
+  String get addNote;
+
+  /// No description provided for @editNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Note'**
+  String get editNote;
+
+  /// No description provided for @deleteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Note'**
+  String get deleteNote;
+
+  /// No description provided for @noteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Note Title'**
+  String get noteTitle;
+
+  /// No description provided for @noteContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Note Content'**
+  String get noteContent;
+
+  /// No description provided for @saveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Note'**
+  String get saveNote;
+
+  /// No description provided for @deleteNoteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this note?'**
+  String get deleteNoteConfirm;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @annotations.
+  ///
+  /// In en, this message translates to:
+  /// **'Annotations'**
+  String get annotations;
+
+  /// No description provided for @highlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight'**
+  String get highlight;
+
+  /// No description provided for @underline.
+  ///
+  /// In en, this message translates to:
+  /// **'Underline'**
+  String get underline;
+
+  /// No description provided for @strikethrough.
+  ///
+  /// In en, this message translates to:
+  /// **'Strikethrough'**
+  String get strikethrough;
+
+  /// No description provided for @draw.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw'**
+  String get draw;
+
+  /// No description provided for @eraser.
+  ///
+  /// In en, this message translates to:
+  /// **'Eraser'**
+  String get eraser;
+
+  /// No description provided for @colorPicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Picker'**
+  String get colorPicker;
+
+  /// No description provided for @thickness.
+  ///
+  /// In en, this message translates to:
+  /// **'Thickness'**
+  String get thickness;
+
+  /// No description provided for @opacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opacity'**
+  String get opacity;
+
+  /// No description provided for @page.
+  ///
+  /// In en, this message translates to:
+  /// **'Page'**
+  String get page;
+
+  /// No description provided for @of.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get of;
+
+  /// No description provided for @goToPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Page'**
+  String get goToPage;
+
+  /// No description provided for @pageNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Page Number'**
+  String get pageNumber;
+
+  /// No description provided for @invalidPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid page number'**
+  String get invalidPage;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export;
+
+  /// No description provided for @print.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get print;
+
+  /// No description provided for @download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get download;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get warning;
+
+  /// No description provided for @info.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get info;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get loading;
+
+  /// No description provided for @pleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get pleaseWait;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
 }
 
 class _AppLocalizationsDelegate
@@ -559,8 +1113,14 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+        'ar',
+        'de',
+        'en',
+        'es',
+        'fr',
+        'zh'
+      ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -571,8 +1131,16 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'ar':
       return AppLocalizationsAr();
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(

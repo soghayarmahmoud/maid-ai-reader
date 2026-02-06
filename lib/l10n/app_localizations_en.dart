@@ -161,7 +161,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfFeaturesDesc =>
-      '• Annotations with multiple colors\n• AI-powered chat and analysis\n• Smart notes with AI summarization\n• Text translation\n• Google search integration\n• Export conversations and notes\n• Advanced search with filters\n• Bookmarks and navigation';
+      '• Annotations with multiple colors\\n• AI-powered chat and analysis\\n• Smart notes with AI summarization\\n• Text translation\\n• Google search integration\\n• Export conversations and notes\\n• Advanced search with filters\\n• Bookmarks and navigation';
 
   @override
   String get myLibrary => 'My Library';
@@ -234,4 +234,280 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chinese => '中文';
+
+  @override
+  String get sectionAppearance => '🎨 Appearance';
+
+  @override
+  String get sectionReadingPreferences => '📖 Reading Preferences';
+
+  @override
+  String get sectionLanguage => '🌍 Language';
+
+  @override
+  String get sectionSecurity => '🔒 Security & Privacy';
+
+  @override
+  String get sectionStorage => '💾 Storage';
+
+  @override
+  String get sectionAbout => 'ℹ️ About';
+
+  @override
+  String get zoom50 => '50%';
+
+  @override
+  String get zoom75 => '75%';
+
+  @override
+  String get zoom100 => '100%';
+
+  @override
+  String get zoom150 => '150%';
+
+  @override
+  String get zoom200 => '200%';
+
+  @override
+  String get recent => 'Recent';
+
+  @override
+  String get allFiles => 'All Files';
+
+  @override
+  String get openPdf => 'Open PDF';
+
+  @override
+  String get opening => 'Opening...';
+
+  @override
+  String get noRecentFiles => 'No Recent Files';
+
+  @override
+  String get noRecentFilesMsg =>
+      'Open a PDF to get started.\\nYour recently viewed files will appear here.';
+
+  @override
+  String get allFilesTitle => 'All Files';
+
+  @override
+  String get allFilesMsg => 'File browsing feature coming soon.';
+
+  @override
+  String get fileNotFound => 'File not found';
+
+  @override
+  String errorPickingFile(String error) {
+    return 'Error picking file: $error';
+  }
+
+  @override
+  String get annotationsMultipleColors => 'Annotations with multiple colors';
+
+  @override
+  String get aiPoweredChat => 'AI-powered chat and analysis';
+
+  @override
+  String get smartNotes => 'Smart notes with AI summarization';
+
+  @override
+  String get textTranslation => 'Text translation';
+
+  @override
+  String get googleSearch => 'Google search integration';
+
+  @override
+  String get exportConversations => 'Export conversations and notes';
+
+  @override
+  String get advancedSearch => 'Advanced search with filters';
+
+  @override
+  String get bookmarksNavigation => 'Bookmarks and navigation';
+
+  @override
+  String get ctrlF => 'Ctrl + F';
+
+  @override
+  String get ctrlH => 'Ctrl + H';
+
+  @override
+  String get ctrlU => 'Ctrl + U';
+
+  @override
+  String get ctrlS => 'Ctrl + S';
+
+  @override
+  String get ctrlD => 'Ctrl + D';
+
+  @override
+  String get ctrlT => 'Ctrl + T';
+
+  @override
+  String get ctrlB => 'Ctrl + B';
+
+  @override
+  String get arrowKeys => '← →';
+
+  @override
+  String get pinSetup => 'PIN Setup';
+
+  @override
+  String get enterNewPin => 'Enter new PIN';
+
+  @override
+  String get confirmPin => 'Confirm PIN';
+
+  @override
+  String get pinMismatch => 'PINs do not match';
+
+  @override
+  String get pinTooShort => 'PIN must be at least 4 digits';
+
+  @override
+  String get pinSetupSuccess => 'PIN successfully set';
+
+  @override
+  String get enterPin => 'Enter PIN';
+
+  @override
+  String get wrongPin => 'Wrong PIN';
+
+  @override
+  String get pinLocked => 'Too many attempts. Try again later.';
+
+  @override
+  String get biometricPrompt => 'Authenticate to unlock';
+
+  @override
+  String get biometricSuccess => 'Authentication successful';
+
+  @override
+  String get biometricFailed => 'Authentication failed';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get addNote => 'Add Note';
+
+  @override
+  String get editNote => 'Edit Note';
+
+  @override
+  String get deleteNote => 'Delete Note';
+
+  @override
+  String get noteTitle => 'Note Title';
+
+  @override
+  String get noteContent => 'Note Content';
+
+  @override
+  String get saveNote => 'Save Note';
+
+  @override
+  String get deleteNoteConfirm => 'Are you sure you want to delete this note?';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get annotations => 'Annotations';
+
+  @override
+  String get highlight => 'Highlight';
+
+  @override
+  String get underline => 'Underline';
+
+  @override
+  String get strikethrough => 'Strikethrough';
+
+  @override
+  String get draw => 'Draw';
+
+  @override
+  String get eraser => 'Eraser';
+
+  @override
+  String get colorPicker => 'Color Picker';
+
+  @override
+  String get thickness => 'Thickness';
+
+  @override
+  String get opacity => 'Opacity';
+
+  @override
+  String get page => 'Page';
+
+  @override
+  String get of => 'of';
+
+  @override
+  String get goToPage => 'Go to Page';
+
+  @override
+  String get pageNumber => 'Page Number';
+
+  @override
+  String get invalidPage => 'Invalid page number';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get print => 'Print';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get warning => 'Warning';
+
+  @override
+  String get info => 'Info';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get loading => 'Loading...';
+
+  @override
+  String get pleaseWait => 'Please wait...';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get remove => 'Remove';
 }

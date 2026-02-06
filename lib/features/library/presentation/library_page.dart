@@ -5,6 +5,7 @@ import 'package:maid_ai_reader/core/constants/app_strings.dart';
 import 'package:maid_ai_reader/core/widgets/error_states.dart';
 import 'package:maid_ai_reader/features/library/data/models/reading_progress_model.dart';
 import 'package:maid_ai_reader/features/pdf_reader/presentation/pdf_reader_page.dart';
+import 'package:maid_ai_reader/l10n/app_localizations.dart';
 import 'dart:io';
 
 class LibraryPage extends StatefulWidget {
@@ -81,7 +82,7 @@ class _LibraryPageState extends State<LibraryPage>
     if (!await file.exists()) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('File not found')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.fileNotFound)),
         );
       }
       return;
@@ -133,9 +134,9 @@ class _LibraryPageState extends State<LibraryPage>
             fontSize: 14,
             fontWeight: FontWeight.normal,
           ),
-          tabs: const [
-            Tab(icon: Icon(Icons.history), text: 'Recent'),
-            Tab(icon: Icon(Icons.folder), text: 'All Files'),
+          tabs: [
+            Tab(icon: const Icon(Icons.history), text: AppLocalizations.of(context)!.recent),
+            Tab(icon: const Icon(Icons.folder), text: AppLocalizations.of(context)!.allFiles),
           ],
         ),
         actions: [
@@ -166,7 +167,7 @@ class _LibraryPageState extends State<LibraryPage>
                 ),
               )
             : const Icon(Icons.add),
-        label: Text(_isLoading ? 'Opening...' : 'Open PDF'),
+        label: Text(_isLoading ? AppLocalizations.of(context)!.opening : AppLocalizations.of(context)!.openPdf),
       ),
     );
   }
@@ -174,12 +175,11 @@ class _LibraryPageState extends State<LibraryPage>
   Widget _buildRecentTab() {
     if (_recentFiles.isEmpty) {
       return EmptyStateWidget(
-        title: 'No Recent Files',
-        message:
-            'Open a PDF to get started.\nYour recently viewed files will appear here.',
+        title: AppLocalizations.of(context)!.noRecentFiles,
+        message: AppLocalizations.of(context)!.noRecentFilesMsg,
         icon: Icons.description_outlined,
         onAction: _pickFile,
-        actionButtonText: 'Open PDF',
+        actionButtonText: AppLocalizations.of(context)!.openPdf,
         actionIcon: Icons.add,
       );
     }
@@ -257,11 +257,11 @@ class _LibraryPageState extends State<LibraryPage>
 
   Widget _buildAllFilesTab() {
     return EmptyStateWidget(
-      title: 'All Files',
-      message: 'File browsing feature coming soon.',
+      title: AppLocalizations.of(context)!.allFilesTitle,
+      message: AppLocalizations.of(context)!.allFilesMsg,
       icon: Icons.folder_outlined,
       onAction: _pickFile,
-      actionButtonText: 'Open PDF',
+      actionButtonText: AppLocalizations.of(context)!.openPdf,
       actionIcon: Icons.add,
     );
   }

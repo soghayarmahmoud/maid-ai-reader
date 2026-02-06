@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_colors.dart';
+import 'package:maid_ai_reader/l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
   final VoidCallback onToggleTheme;
@@ -73,19 +74,19 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(AppLocalizations.of(context)!.settings),
         elevation: 0,
       ),
       body: ListView(
         children: [
           // Appearance Section
-          _buildSectionHeader('🎨 Appearance'),
+          _buildSectionHeader(AppLocalizations.of(context)!.sectionAppearance),
           _buildCard(
             children: [
               SwitchListTile(
                 secondary: const Icon(Icons.dark_mode),
-                title: const Text('Dark Mode'),
-                subtitle: const Text('Toggle between light and dark themes'),
+                title: Text(AppLocalizations.of(context)!.darkMode),
+                subtitle: Text(AppLocalizations.of(context)!.darkModeDesc),
                 value: _isDarkMode,
                 onChanged: (value) {
                   setState(() {
@@ -97,7 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.color_lens),
-                title: const Text('Default Highlight Color'),
+                title: Text(AppLocalizations.of(context)!.defaultHighlightColor),
                 trailing: Container(
                   width: 40,
                   height: 40,
@@ -115,12 +116,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // Reading Preferences Section
-          _buildSectionHeader('📖 Reading Preferences'),
+          _buildSectionHeader(AppLocalizations.of(context)!.sectionReadingPreferences),
           _buildCard(
             children: [
               ListTile(
                 leading: const Icon(Icons.zoom_in),
-                title: const Text('Default Zoom'),
+                title: Text(AppLocalizations.of(context)!.defaultZoom),
                 subtitle: Text(_defaultZoom),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: _showZoomDialog,
@@ -128,8 +129,8 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               SwitchListTile(
                 secondary: const Icon(Icons.save),
-                title: const Text('Auto Save'),
-                subtitle: const Text('Automatically save reading progress'),
+                title: Text(AppLocalizations.of(context)!.autoSave),
+                subtitle: Text(AppLocalizations.of(context)!.autoSaveDesc),
                 value: _autoSave,
                 onChanged: (value) {
                   setState(() {
@@ -140,8 +141,8 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               SwitchListTile(
                 secondary: const Icon(Icons.image),
-                title: const Text('Show Thumbnails'),
-                subtitle: const Text('Display file thumbnails in library'),
+                title: Text(AppLocalizations.of(context)!.showThumbnails),
+                subtitle: Text(AppLocalizations.of(context)!.showThumbnailsDesc),
                 value: _showThumbnails,
                 onChanged: (value) {
                   setState(() {
@@ -153,12 +154,12 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // Language Section
-          _buildSectionHeader('🌍 Language'),
+          _buildSectionHeader(AppLocalizations.of(context)!.sectionLanguage),
           _buildCard(
             children: [
               ListTile(
                 leading: const Icon(Icons.language),
-                title: const Text('Language'),
+                title: Text(AppLocalizations.of(context)!.language),
                 subtitle: Text(_language),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: _showLanguageDialog,
@@ -167,13 +168,13 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // Security Section
-          _buildSectionHeader('🔒 Security & Privacy'),
+          _buildSectionHeader(AppLocalizations.of(context)!.sectionSecurity),
           _buildCard(
             children: [
               SwitchListTile(
                 secondary: const Icon(Icons.lock),
-                title: const Text('App Lock'),
-                subtitle: const Text('Require PIN to open app'),
+                title: Text(AppLocalizations.of(context)!.appLock),
+                subtitle: Text(AppLocalizations.of(context)!.appLockDesc),
                 value: _appLockEnabled,
                 onChanged: (value) async {
                   if (value) {
@@ -204,8 +205,8 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               SwitchListTile(
                 secondary: const Icon(Icons.fingerprint),
-                title: const Text('Biometric Authentication'),
-                subtitle: const Text('Use fingerprint or face ID'),
+                title: Text(AppLocalizations.of(context)!.biometric),
+                subtitle: Text(AppLocalizations.of(context)!.biometricDesc),
                 value: _enableBiometric,
                 onChanged: _appLockEnabled
                     ? (value) {
@@ -219,13 +220,13 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // Storage Section
-          _buildSectionHeader('💾 Storage'),
+          _buildSectionHeader(AppLocalizations.of(context)!.sectionStorage),
           _buildCard(
             children: [
               ListTile(
                 leading: const Icon(Icons.storage),
-                title: const Text('Cache Size'),
-                subtitle: const Text('Calculating...'),
+                title: Text(AppLocalizations.of(context)!.cacheSize),
+                subtitle: Text(AppLocalizations.of(context)!.calculating),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   // TODO: Show cache details
@@ -234,15 +235,15 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.delete_sweep),
-                title: const Text('Clear Cache'),
-                subtitle: const Text('Free up storage space'),
+                title: Text(AppLocalizations.of(context)!.clearCache),
+                subtitle: Text(AppLocalizations.of(context)!.clearCacheDesc),
                 onTap: _showClearCacheDialog,
               ),
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.backup),
-                title: const Text('Backup & Restore'),
-                subtitle: const Text('Backup notes and annotations'),
+                title: Text(AppLocalizations.of(context)!.backupRestore),
+                subtitle: Text(AppLocalizations.of(context)!.backupRestoreDesc),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   // TODO: Show backup options
@@ -252,25 +253,25 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // About Section
-          _buildSectionHeader('ℹ️ About'),
+          _buildSectionHeader(AppLocalizations.of(context)!.sectionAbout),
           _buildCard(
             children: [
               ListTile(
                 leading: const Icon(Icons.info),
-                title: const Text('Version'),
+                title: Text(AppLocalizations.of(context)!.version),
                 subtitle: Text(_version),
               ),
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.help),
-                title: const Text('Help & Shortcuts'),
+                title: Text(AppLocalizations.of(context)!.helpShortcuts),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: _showHelpDialog,
               ),
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.privacy_tip),
-                title: const Text('Privacy Policy'),
+                title: Text(AppLocalizations.of(context)!.privacyPolicy),
                 trailing: const Icon(Icons.open_in_new, size: 16),
                 onTap: () {
                   // TODO: Open privacy policy
@@ -279,7 +280,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.description),
-                title: const Text('Terms of Service'),
+                title: Text(AppLocalizations.of(context)!.termsOfService),
                 trailing: const Icon(Icons.open_in_new, size: 16),
                 onTap: () {
                   // TODO: Open terms
@@ -288,7 +289,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.code),
-                title: const Text('Open Source Licenses'),
+                title: Text(AppLocalizations.of(context)!.openSourceLicenses),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   showLicensePage(context: context);
@@ -333,22 +334,25 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showZoomDialog() {
+    final l10n = AppLocalizations.of(context)!;
+    final zoomOptions = [
+      l10n.fitWidth,
+      l10n.fitPage,
+      l10n.actualSize,
+      l10n.zoom50,
+      l10n.zoom75,
+      l10n.zoom100,
+      l10n.zoom150,
+      l10n.zoom200,
+    ];
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Default Zoom'),
+        title: Text(l10n.defaultZoom),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            'Fit Width',
-            'Fit Page',
-            'Actual Size',
-            '50%',
-            '75%',
-            '100%',
-            '150%',
-            '200%',
-          ].map((zoom) {
+          children: zoomOptions.map((zoom) {
             return RadioListTile(
               title: Text(zoom),
               value: zoom,
@@ -367,18 +371,23 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLanguageDialog() {
+    final l10n = AppLocalizations.of(context)!;
     final languageMap = {
-      'English': 'en',
-      'Arabic': 'ar',
+      l10n.english: 'en',
+      l10n.arabic: 'ar',
+      l10n.spanish: 'es',
+      l10n.french: 'fr',
+      l10n.german: 'de',
+      l10n.chinese: 'zh',
     };
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Language'),
+        title: Text(l10n.selectLanguage),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: ['English', 'Arabic'].map((lang) {
+          children: languageMap.keys.map((lang) {
             return RadioListTile(
               title: Text(lang),
               value: lang,
@@ -399,29 +408,27 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showClearCacheDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear Cache'),
-        content: const Text(
-          'This will delete all cached PDF pages and thumbnails. '
-          'Your annotations and notes will not be affected.',
-        ),
+        title: Text(l10n.clearCacheTitle),
+        content: Text(l10n.clearCacheMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               // TODO: Clear cache
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Cache cleared!')),
+                SnackBar(content: Text(l10n.cacheCleared)),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Clear'),
+            child: Text(l10n.clear),
           ),
         ],
       ),
@@ -429,49 +436,50 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showHelpDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Help & Shortcuts'),
+        title: Text(l10n.helpShortcuts),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Keyboard Shortcuts:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Text(
+                l10n.keyboardShortcuts,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 12),
-              _buildShortcutItem('Ctrl + F', 'Search in PDF'),
-              _buildShortcutItem('Ctrl + H', 'Highlight selected text'),
-              _buildShortcutItem('Ctrl + U', 'Underline selected text'),
-              _buildShortcutItem('Ctrl + S', 'Strikeout selected text'),
-              _buildShortcutItem('Ctrl + D', 'Free drawing mode'),
-              _buildShortcutItem('Ctrl + T', 'Toggle annotation toolbar'),
-              _buildShortcutItem('Ctrl + B', 'Add bookmark'),
-              _buildShortcutItem('← →', 'Navigate pages'),
+              _buildShortcutItem(l10n.ctrlF, l10n.searchInPdf),
+              _buildShortcutItem(l10n.ctrlH, l10n.highlightText),
+              _buildShortcutItem(l10n.ctrlU, l10n.underlineText),
+              _buildShortcutItem(l10n.ctrlS, l10n.strikeoutText),
+              _buildShortcutItem(l10n.ctrlD, l10n.freeDrawing),
+              _buildShortcutItem(l10n.ctrlT, l10n.toggleToolbar),
+              _buildShortcutItem(l10n.ctrlB, l10n.addBookmark),
+              _buildShortcutItem(l10n.arrowKeys, l10n.navigatePages),
               const SizedBox(height: 16),
-              const Text(
-                'PDF Features:',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Text(
+                l10n.pdfFeatures,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
-              const Text('• Annotations with multiple colors'),
-              const Text('• AI-powered chat and analysis'),
-              const Text('• Smart notes with AI summarization'),
-              const Text('• Text translation'),
-              const Text('• Google search integration'),
-              const Text('• Export conversations and notes'),
-              const Text('• Advanced search with filters'),
-              const Text('• Bookmarks and navigation'),
+              Text('• ${l10n.annotationsMultipleColors}'),
+              Text('• ${l10n.aiPoweredChat}'),
+              Text('• ${l10n.smartNotes}'),
+              Text('• ${l10n.textTranslation}'),
+              Text('• ${l10n.googleSearch}'),
+              Text('• ${l10n.exportConversations}'),
+              Text('• ${l10n.advancedSearch}'),
+              Text('• ${l10n.bookmarksNavigation}'),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
