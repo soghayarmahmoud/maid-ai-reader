@@ -441,7 +441,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get page => '页';
 
   @override
-  String get of => '共';
+  String get ofPages => '共';
 
   @override
   String get goToPage => '跳转到页面';

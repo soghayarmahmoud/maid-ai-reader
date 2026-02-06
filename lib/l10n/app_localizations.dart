@@ -964,11 +964,11 @@ abstract class AppLocalizations {
   /// **'Page'**
   String get page;
 
-  /// No description provided for @of.
+  /// No description provided for @ofPages.
   ///
   /// In en, this message translates to:
   /// **'of'**
-  String get of;
+  String get ofPages;
 
   /// No description provided for @goToPage.
   ///

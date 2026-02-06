@@ -446,7 +446,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get page => 'Seite';
 
   @override
-  String get of => 'von';
+  String get ofPages => 'von';
 
   @override
   String get goToPage => 'Gehe zu Seite';

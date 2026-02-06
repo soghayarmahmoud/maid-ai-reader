@@ -6,6 +6,9 @@
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
 
+# Play Core - these are optional, so we can safely ignore warnings
+-dontwarn com.google.android.play.core.**
+
 # Syncfusion
 -keep class com.syncfusion.** { *; }
 -dontwarn com.syncfusion.**

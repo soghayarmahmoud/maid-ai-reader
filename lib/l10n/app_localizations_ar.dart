@@ -443,7 +443,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get page => 'صفحة';
 
   @override
-  String get of => 'من';
+  String get ofPages => 'من';
 
   @override
   String get goToPage => 'الذهاب إلى الصفحة';
