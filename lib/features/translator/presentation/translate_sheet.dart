@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+import 'package:flutter/services.dart';
+>>>>>>> master
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_colors.dart';
 
@@ -34,6 +38,7 @@ class _TranslateSheetState extends State<TranslateSheet> {
       _isLoading = true;
     });
 
+<<<<<<< HEAD
     // Simulate translation (replace with actual AI translation service)
     await Future.delayed(const Duration(seconds: 2));
 
@@ -42,6 +47,43 @@ class _TranslateSheetState extends State<TranslateSheet> {
         _translatedText = 'Simulated translation to $_selectedLanguage. Please integrate with a real translation service.';
         _isLoading = false;
       });
+=======
+    try {
+      // TODO: Integrate with Gemini AI for translation
+      // Import the AI service: import '../../ai_search/data/gemini_ai_service.dart';
+      // final aiService = GeminiAiService();
+      // await aiService.initialize();
+      // final translated = await aiService.translateText(widget.text, _selectedLanguage);
+      
+      // For now, simulate translation with a more realistic message
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (mounted) {
+        setState(() {
+          _translatedText = '''[AI Translation to $_selectedLanguage]
+
+${widget.text}
+
+---
+⚠️ To enable real translation:
+1. Add your Gemini API key in Settings
+2. The AI will translate this text automatically
+3. This is a placeholder until AI is configured
+          ''';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _translatedText = 'Translation failed: $e';
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Translation error: $e')),
+        );
+      }
+>>>>>>> master
     }
   }
 
@@ -85,7 +127,11 @@ class _TranslateSheetState extends State<TranslateSheet> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
+<<<<<<< HEAD
                 value: _selectedLanguage,
+=======
+                initialValue: _selectedLanguage,
+>>>>>>> master
                 decoration: const InputDecoration(
                   labelText: AppStrings.selectLanguage,
                   border: OutlineInputBorder(),
@@ -116,9 +162,33 @@ class _TranslateSheetState extends State<TranslateSheet> {
               ),
               if (_translatedText != null) ...[
                 const SizedBox(height: 16),
+<<<<<<< HEAD
                 Text(
                   AppStrings.translatedText,
                   style: Theme.of(context).textTheme.titleMedium,
+=======
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppStrings.translatedText,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.copy, size: 20),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: _translatedText!));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Translation copied to clipboard!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      tooltip: 'Copy to clipboard',
+                    ),
+                  ],
+>>>>>>> master
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -128,7 +198,11 @@ class _TranslateSheetState extends State<TranslateSheet> {
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: AppColors.primary),
                   ),
+<<<<<<< HEAD
                   child: Text(
+=======
+                  child: SelectableText(
+>>>>>>> master
                     _translatedText!,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),

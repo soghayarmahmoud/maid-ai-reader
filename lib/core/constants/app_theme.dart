@@ -12,7 +12,10 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         surface: AppColors.surfaceLight,
+<<<<<<< HEAD
         background: AppColors.backgroundLight,
+=======
+>>>>>>> master
         error: AppColors.error,
       ),
       appBarTheme: const AppBarTheme(
@@ -21,7 +24,11 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
       ),
+<<<<<<< HEAD
       cardTheme: CardTheme(
+=======
+      cardTheme: CardThemeData(
+>>>>>>> master
         color: AppColors.surfaceLight,
         elevation: 2,
         shape: RoundedRectangleBorder(
@@ -98,7 +105,10 @@ class AppTheme {
         primary: AppColors.primary,
         secondary: AppColors.secondary,
         surface: AppColors.surfaceDark,
+<<<<<<< HEAD
         background: AppColors.backgroundDark,
+=======
+>>>>>>> master
         error: AppColors.error,
       ),
       appBarTheme: const AppBarTheme(
@@ -107,7 +117,11 @@ class AppTheme {
         elevation: 0,
         centerTitle: true,
       ),
+<<<<<<< HEAD
       cardTheme: CardTheme(
+=======
+      cardTheme: CardThemeData(
+>>>>>>> master
         color: AppColors.surfaceDark,
         elevation: 2,
         shape: RoundedRectangleBorder(
