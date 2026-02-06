@@ -65,25 +65,43 @@ class ReadingProgressRepository {
   static const String _boxName = 'reading_progress';
   late Box<ReadingProgressModel> _progressBox;
 
+  // Public getter to check if box is initialized
+  bool get isInitialized => _progressBox != null && _progressBox.isOpen;
+
   Future<void> initialize() async {
-    if (!Hive.isAdapterRegistered(2)) {
-      Hive.registerAdapter(ReadingProgressModelAdapter());
+    try {
+      if (!Hive.isAdapterRegistered(2)) {
+        Hive.registerAdapter(ReadingProgressModelAdapter());
+      }
+      _progressBox = await Hive.openBox<ReadingProgressModel>(_boxName);
+      print('✓ ReadingProgressRepository initialized successfully');
+    } catch (e) {
+      print('✗ Error initializing ReadingProgressRepository: $e');
+      rethrow;
     }
-    _progressBox = await Hive.openBox<ReadingProgressModel>(_boxName);
   }
 
   // Save or update progress
   Future<void> saveProgress(ReadingProgressModel progress) async {
+    if (!isInitialized) {
+      await initialize();
+    }
     await _progressBox.put(progress.pdfPath, progress);
   }
 
   // Get progress for a PDF
   ReadingProgressModel? getProgress(String pdfPath) {
+    if (!isInitialized) {
+      return null;
+    }
     return _progressBox.get(pdfPath);
   }
 
   // Get all recent files (sorted by last opened)
   List<ReadingProgressModel> getRecentFiles({int limit = 10}) {
+    if (!isInitialized) {
+      return [];
+    }
     final allProgress = _progressBox.values.toList();
     allProgress.sort((a, b) => b.lastOpened.compareTo(a.lastOpened));
     return limit > 0 ? allProgress.take(limit).toList() : allProgress;
@@ -91,15 +109,23 @@ class ReadingProgressRepository {
 
   // Delete progress
   Future<void> deleteProgress(String pdfPath) async {
+    if (!isInitialized) {
+      await initialize();
+    }
     await _progressBox.delete(pdfPath);
   }
 
   // Clear all progress
   Future<void> clearAll() async {
+    if (!isInitialized) {
+      await initialize();
+    }
     await _progressBox.clear();
   }
 
   void dispose() {
-    _progressBox.close();
+    if (isInitialized) {
+      _progressBox.close();
+    }
   }
 }

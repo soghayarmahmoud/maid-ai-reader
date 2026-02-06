@@ -5,17 +5,62 @@ import 'app.dart';
 import 'di/service_locator.dart';
 import 'features/security/presentation/pin_lock_screen.dart';
 import 'features/security/services/pin_service.dart';
+import 'services/admob_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Hive
-  await Hive.initFlutter();
+  try {
+    // Initialize Hive first
+    await Hive.initFlutter();
+    print('✓ Hive initialized successfully');
 
-  // Initialize dependencies
-  await initializeDependencies();
+    // Initialize Ad Mob
+    await AdMobService().initialize();
+    print('✓ AdMob initialized successfully');
 
-  runApp(const MyAppWithSecurity());
+    // Initialize dependencies
+    await initializeDependencies();
+    print('✓ Dependencies initialized successfully');
+
+    runApp(const MyAppWithSecurity());
+  } catch (e, stackTrace) {
+    print('✗ Fatal initialization error: $e');
+    print('Stack trace: $stackTrace');
+    // Show error UI
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 80,
+                  color: Colors.red,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Initialization Error',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'Error: $e',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyAppWithSecurity extends StatefulWidget {

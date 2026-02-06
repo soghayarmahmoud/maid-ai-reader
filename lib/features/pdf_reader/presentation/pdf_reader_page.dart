@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/banner_ad_widget.dart';
 import '../../ai_search/presentation/ai_chat_page.dart';
 import '../../smart_notes/presentation/notes_page.dart';
 import '../../translator/presentation/translate_sheet.dart';
@@ -440,6 +441,8 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                 ],
               ),
             ),
+            // Banner Ad
+            const BannerAdWidget(isTest: false),
           ],
         ),
       ),

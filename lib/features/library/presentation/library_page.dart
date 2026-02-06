@@ -3,9 +3,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:maid_ai_reader/core/constants/app_colors.dart';
 import 'package:maid_ai_reader/core/constants/app_strings.dart';
 import 'package:maid_ai_reader/core/widgets/error_states.dart';
+import 'package:maid_ai_reader/core/widgets/banner_ad_widget.dart';
+import 'package:maid_ai_reader/core/widgets/interstitial_ad_manager.dart';
 import 'package:maid_ai_reader/features/library/data/models/reading_progress_model.dart';
 import 'package:maid_ai_reader/features/pdf_reader/presentation/pdf_reader_page.dart';
 import 'package:maid_ai_reader/l10n/app_localizations.dart';
+import 'package:maid_ai_reader/l10n/l10n_helper.dart';
 import 'dart:io';
 
 class LibraryPage extends StatefulWidget {
@@ -27,14 +30,38 @@ class _LibraryPageState extends State<LibraryPage>
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _initializeProgress();
+
+    // Load interstitial ad in background
+    Future.delayed(const Duration(seconds: 2), () {
+      final interstitialAdManager = InterstitialAdManager();
+      if (!interstitialAdManager.isAdLoaded) {
+        interstitialAdManager.loadInterstitialAd(isTest: false);
+        print('✓ Preloading interstitial ad for next use');
+      }
+    });
   }
 
   Future<void> _initializeProgress() async {
     try {
-      await _progressRepo.initialize();
+      // Check if repository is already initialized
+      if (!_progressRepo.isInitialized) {
+        await _progressRepo.initialize();
+      }
       _loadRecentFiles();
-    } catch (e) {
-      print('Error initializing progress: $e');
+      print('✓ Reading progress repository initialized');
+    } catch (e, stackTrace) {
+      print('✗ Error initializing progress repository: $e');
+      print('Stack trace: $stackTrace');
+      // Show snackbar with error but let app continue
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Library loading error: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
@@ -71,18 +98,24 @@ class _LibraryPageState extends State<LibraryPage>
           SnackBar(content: Text('Error picking file: $e')),
         );
       }
+      print('Error in _pickFile: $e');
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _openPdf(File file) async {
     if (!await file.exists()) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.fileNotFound)),
+          SnackBar(
+              content:
+                  Text(l10n?.fileNotFound ?? FallbackStrings.fileNotFound)),
         );
       }
       return;
@@ -96,6 +129,17 @@ class _LibraryPageState extends State<LibraryPage>
           _recentFiles.removeLast();
         }
       });
+    }
+
+    // Show interstitial ad before opening PDF
+    print('📢 Preparing to show interstitial ad...');
+    final interstitialAdManager = InterstitialAdManager();
+    if (interstitialAdManager.isAdLoaded) {
+      await interstitialAdManager.showInterstitialAd();
+    } else {
+      print('⚠️ Interstitial ad not ready yet, loading in background...');
+      // Load ad for next time
+      interstitialAdManager.loadInterstitialAd(isTest: false);
     }
 
     if (mounted) {
@@ -114,6 +158,7 @@ class _LibraryPageState extends State<LibraryPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context) ?? AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.appName),
@@ -135,8 +180,12 @@ class _LibraryPageState extends State<LibraryPage>
             fontWeight: FontWeight.normal,
           ),
           tabs: [
-            Tab(icon: const Icon(Icons.history), text: AppLocalizations.of(context)!.recent),
-            Tab(icon: const Icon(Icons.folder), text: AppLocalizations.of(context)!.allFiles),
+            Tab(
+                icon: const Icon(Icons.history),
+                text: l10n?.recent ?? FallbackStrings.recent),
+            Tab(
+                icon: const Icon(Icons.folder),
+                text: l10n?.allFiles ?? FallbackStrings.allFiles),
           ],
         ),
         actions: [
@@ -148,11 +197,19 @@ class _LibraryPageState extends State<LibraryPage>
           ),
         ],
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _buildRecentTab(),
-          _buildAllFilesTab(),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildRecentTab(),
+                _buildAllFilesTab(),
+              ],
+            ),
+          ),
+          // Banner Ad
+          const BannerAdWidget(isTest: false),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -167,19 +224,22 @@ class _LibraryPageState extends State<LibraryPage>
                 ),
               )
             : const Icon(Icons.add),
-        label: Text(_isLoading ? AppLocalizations.of(context)!.opening : AppLocalizations.of(context)!.openPdf),
+        label: Text(_isLoading
+            ? l10n?.opening ?? FallbackStrings.opening
+            : l10n?.openPdf ?? FallbackStrings.openPdf),
       ),
     );
   }
 
   Widget _buildRecentTab() {
+    final l10n = AppLocalizations.of(context);
     if (_recentFiles.isEmpty) {
       return EmptyStateWidget(
-        title: AppLocalizations.of(context)!.noRecentFiles,
-        message: AppLocalizations.of(context)!.noRecentFilesMsg,
+        title: l10n?.noRecentFiles ?? FallbackStrings.noRecentFiles,
+        message: l10n?.noRecentFilesMsg ?? FallbackStrings.noRecentFilesMsg,
         icon: Icons.description_outlined,
         onAction: _pickFile,
-        actionButtonText: AppLocalizations.of(context)!.openPdf,
+        actionButtonText: l10n?.openPdf ?? FallbackStrings.openPdf,
         actionIcon: Icons.add,
       );
     }
@@ -256,12 +316,13 @@ class _LibraryPageState extends State<LibraryPage>
   }
 
   Widget _buildAllFilesTab() {
+    final l10n = AppLocalizations.of(context);
     return EmptyStateWidget(
-      title: AppLocalizations.of(context)!.allFilesTitle,
-      message: AppLocalizations.of(context)!.allFilesMsg,
+      title: l10n?.allFilesTitle ?? FallbackStrings.allFilesTitle,
+      message: l10n?.allFilesMsg ?? FallbackStrings.allFilesMsg,
       icon: Icons.folder_outlined,
       onAction: _pickFile,
-      actionButtonText: AppLocalizations.of(context)!.openPdf,
+      actionButtonText: l10n?.openPdf ?? FallbackStrings.openPdf,
       actionIcon: Icons.add,
     );
   }

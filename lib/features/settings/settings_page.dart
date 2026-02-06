@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/widgets/banner_ad_widget.dart';
 import 'package:maid_ai_reader/l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -98,7 +99,8 @@ class _SettingsPageState extends State<SettingsPage> {
               const Divider(height: 1),
               ListTile(
                 leading: const Icon(Icons.color_lens),
-                title: Text(AppLocalizations.of(context)!.defaultHighlightColor),
+                title:
+                    Text(AppLocalizations.of(context)!.defaultHighlightColor),
                 trailing: Container(
                   width: 40,
                   height: 40,
@@ -116,7 +118,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           // Reading Preferences Section
-          _buildSectionHeader(AppLocalizations.of(context)!.sectionReadingPreferences),
+          _buildSectionHeader(
+              AppLocalizations.of(context)!.sectionReadingPreferences),
           _buildCard(
             children: [
               ListTile(
@@ -142,7 +145,8 @@ class _SettingsPageState extends State<SettingsPage> {
               SwitchListTile(
                 secondary: const Icon(Icons.image),
                 title: Text(AppLocalizations.of(context)!.showThumbnails),
-                subtitle: Text(AppLocalizations.of(context)!.showThumbnailsDesc),
+                subtitle:
+                    Text(AppLocalizations.of(context)!.showThumbnailsDesc),
                 value: _showThumbnails,
                 onChanged: (value) {
                   setState(() {
@@ -299,6 +303,9 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
 
           const SizedBox(height: 32),
+          // Banner Ad
+          const BannerAdWidget(isTest: false),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -345,7 +352,7 @@ class _SettingsPageState extends State<SettingsPage> {
       l10n.zoom150,
       l10n.zoom200,
     ];
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -448,7 +455,8 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               Text(
                 l10n.keyboardShortcuts,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 12),
               _buildShortcutItem(l10n.ctrlF, l10n.searchInPdf),
@@ -462,7 +470,8 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 16),
               Text(
                 l10n.pdfFeatures,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 8),
               Text('• ${l10n.annotationsMultipleColors}'),

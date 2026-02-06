@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:maid_ai_reader/l10n/app_localizations.dart';
+import 'package:maid_ai_reader/l10n/l10n_helper.dart';
 import 'core/constants/app_theme.dart';
 import 'core/constants/app_strings.dart';
 import 'features/library/presentation/library_page.dart';
@@ -71,6 +72,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final List<Widget> _pages = [
       const LibraryPage(),
       SettingsPage(
@@ -127,17 +129,17 @@ class _MyAppState extends State<MyApp> {
               BottomNavigationBarItem(
                 icon: const Icon(Icons.home_outlined),
                 activeIcon: const Icon(Icons.home),
-                label: AppLocalizations.of(context)!.home,
+                label: l10n?.home ?? FallbackStrings.home,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(Icons.settings_outlined),
                 activeIcon: const Icon(Icons.settings),
-                label: AppLocalizations.of(context)!.settings,
+                label: l10n?.settings ?? FallbackStrings.settings,
               ),
               BottomNavigationBarItem(
                 icon: const Icon(Icons.help_outline),
                 activeIcon: const Icon(Icons.help),
-                label: AppLocalizations.of(context)!.help,
+                label: l10n?.help ?? FallbackStrings.help,
               ),
             ],
             currentIndex: _selectedIndex,
