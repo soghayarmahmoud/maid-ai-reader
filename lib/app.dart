@@ -1,12 +1,4 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'core/constants/app_theme.dart';
-import 'core/constants/app_strings.dart';
-import 'features/library/presentation/library_page.dart';
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-=======
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:maid_ai_reader/l10n/app_localizations.dart';
@@ -23,7 +15,6 @@ class MyApp extends StatefulWidget {
   final String? initialFilePath;
 
   const MyApp({super.key, this.initialFilePath});
->>>>>>> master
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -31,12 +22,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.light;
-<<<<<<< HEAD
-
-  void _toggleTheme() {
-    setState(() {
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-=======
   int _selectedIndex = 0;
   Locale _locale = const Locale('en'); // Default to English
 
@@ -82,14 +67,11 @@ class _MyAppState extends State<MyApp> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
->>>>>>> master
     });
   }
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-=======
     final l10n = AppLocalizations.of(context);
     final List<Widget> _pages = [
       const LibraryPage(),
@@ -100,16 +82,12 @@ class _MyAppState extends State<MyApp> {
       const HelpPage(),
     ];
 
->>>>>>> master
     return MaterialApp(
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: _themeMode,
-<<<<<<< HEAD
-      home: LibraryPage(onToggleTheme: _toggleTheme),
-=======
       locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -184,7 +162,6 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
->>>>>>> master
     );
   }
 }

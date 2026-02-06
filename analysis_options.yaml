@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 analyzer:
   errors:
     unused_import: ignore
->>>>>>> master
 include: package:flutter_lints/flutter.yaml
 
 linter:

@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_colors.dart';
-=======
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_strings.dart';
@@ -10,7 +6,6 @@ import '../../../core/constants/app_colors.dart';
 import '../data/gemini_ai_service.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'dart:io';
->>>>>>> master
 
 class AiChatPage extends StatefulWidget {
   final String pdfPath;
@@ -28,10 +23,6 @@ class AiChatPage extends StatefulWidget {
 
 class _AiChatPageState extends State<AiChatPage> {
   final TextEditingController _messageController = TextEditingController();
-<<<<<<< HEAD
-  final List<ChatMessage> _messages = [];
-  bool _isLoading = false;
-=======
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
   final GeminiAiService _aiService = GeminiAiService();
@@ -46,30 +37,16 @@ class _AiChatPageState extends State<AiChatPage> {
     'Explain the main concepts',
     'Create study questions',
   ];
->>>>>>> master
 
   @override
   void initState() {
     super.initState();
-<<<<<<< HEAD
-=======
     _initializeAi();
->>>>>>> master
     if (widget.selectedText != null && widget.selectedText!.isNotEmpty) {
       _messageController.text = 'Explain this: "${widget.selectedText}"';
     }
   }
 
-<<<<<<< HEAD
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _sendMessage() async {
-    final message = _messageController.text.trim();
-=======
   Future<void> _initializeAi() async {
     try {
       await _aiService.initialize();
@@ -127,7 +104,6 @@ class _AiChatPageState extends State<AiChatPage> {
 
   Future<void> _sendMessage({String? predefinedMessage}) async {
     final message = predefinedMessage ?? _messageController.text.trim();
->>>>>>> master
     if (message.isEmpty) return;
 
     setState(() {
@@ -140,23 +116,6 @@ class _AiChatPageState extends State<AiChatPage> {
       _isLoading = true;
     });
 
-<<<<<<< HEAD
-    // Simulate AI response (replace with actual AI service integration)
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      setState(() {
-        _messages.add(ChatMessage(
-          text: 'This is a simulated AI response. Please integrate with a real AI service (OpenAI, Gemini, etc.) to get actual responses.',
-          isUser: false,
-          timestamp: DateTime.now(),
-        ));
-        _isLoading = false;
-      });
-    }
-  }
-
-=======
     _scrollToBottom();
 
     try {
@@ -229,17 +188,11 @@ class _AiChatPageState extends State<AiChatPage> {
     );
   }
 
->>>>>>> master
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.aiSearch),
-<<<<<<< HEAD
-      ),
-      body: Column(
-        children: [
-=======
         actions: [
           if (_messages.length > 1)
             IconButton(
@@ -281,7 +234,6 @@ class _AiChatPageState extends State<AiChatPage> {
             ),
           
           // Messages List
->>>>>>> master
           Expanded(
             child: _messages.isEmpty
                 ? Center(
@@ -295,39 +247,22 @@ class _AiChatPageState extends State<AiChatPage> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-<<<<<<< HEAD
-                          'Ask a question about your PDF',
-=======
                           !_isInitialized 
                               ? 'Initializing AI assistant...'
                               : 'Ask a question about your PDF',
->>>>>>> master
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: AppColors.grey600,
                               ),
                         ),
-<<<<<<< HEAD
-=======
                         if (!_isInitialized)
                           const Padding(
                             padding: EdgeInsets.all(16),
                             child: CircularProgressIndicator(),
                           ),
->>>>>>> master
                       ],
                     ),
                   )
                 : ListView.builder(
-<<<<<<< HEAD
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      final message = _messages[index];
-                      return _MessageBubble(message: message);
-                    },
-                  ),
-          ),
-=======
                     controller: _scrollController,
                     padding: const EdgeInsets.all(16),
                     physics: const ClampingScrollPhysics(),
@@ -347,21 +282,16 @@ class _AiChatPageState extends State<AiChatPage> {
           ),
           
           // Loading Indicator
->>>>>>> master
           if (_isLoading)
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-<<<<<<< HEAD
-                  const CircularProgressIndicator(),
-=======
                   const SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   ),
->>>>>>> master
                   const SizedBox(width: 16),
                   Text(
                     AppStrings.thinking,
@@ -370,11 +300,8 @@ class _AiChatPageState extends State<AiChatPage> {
                 ],
               ),
             ),
-<<<<<<< HEAD
-=======
           
           // Input Area
->>>>>>> master
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -389,8 +316,6 @@ class _AiChatPageState extends State<AiChatPage> {
             ),
             child: Row(
               children: [
-<<<<<<< HEAD
-=======
                 // Google Search Button (if text selected)
                 if (widget.selectedText != null && widget.selectedText!.isNotEmpty)
                   IconButton(
@@ -400,17 +325,13 @@ class _AiChatPageState extends State<AiChatPage> {
                     color: Colors.blue,
                   ),
                 
->>>>>>> master
                 Expanded(
                   child: TextField(
                     controller: _messageController,
                     decoration: const InputDecoration(
                       hintText: AppStrings.askQuestion,
                       border: OutlineInputBorder(),
-<<<<<<< HEAD
-=======
                       contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
->>>>>>> master
                     ),
                     maxLines: null,
                     textInputAction: TextInputAction.send,
@@ -420,11 +341,7 @@ class _AiChatPageState extends State<AiChatPage> {
                 const SizedBox(width: 8),
                 IconButton(
                   icon: const Icon(Icons.send),
-<<<<<<< HEAD
-                  onPressed: _isLoading ? null : _sendMessage,
-=======
                   onPressed: _isLoading ? null : () => _sendMessage(),
->>>>>>> master
                   color: AppColors.primary,
                 ),
               ],
@@ -434,13 +351,10 @@ class _AiChatPageState extends State<AiChatPage> {
       ),
     );
   }
-<<<<<<< HEAD
-=======
 
   String _formatTime(DateTime time) {
     return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
   }
->>>>>>> master
 }
 
 class ChatMessage {
@@ -457,17 +371,12 @@ class ChatMessage {
 
 class _MessageBubble extends StatelessWidget {
   final ChatMessage message;
-<<<<<<< HEAD
-
-  const _MessageBubble({required this.message});
-=======
   final VoidCallback? onGoogleSearch;
 
   const _MessageBubble({
     required this.message,
     this.onGoogleSearch,
   });
->>>>>>> master
 
   @override
   Widget build(BuildContext context) {
@@ -477,11 +386,7 @@ class _MessageBubble extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(12),
         constraints: BoxConstraints(
-<<<<<<< HEAD
-          maxWidth: MediaQuery.of(context).size.width * 0.7,
-=======
           maxWidth: MediaQuery.of(context).size.width * 0.75,
->>>>>>> master
         ),
         decoration: BoxDecoration(
           color: message.isUser ? AppColors.primary : AppColors.grey200,
@@ -490,9 +395,6 @@ class _MessageBubble extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-<<<<<<< HEAD
-            Text(
-=======
             if (!message.isUser)
               Row(
                 children: [
@@ -514,7 +416,6 @@ class _MessageBubble extends StatelessWidget {
               ),
             if (!message.isUser) const SizedBox(height: 6),
             SelectableText(
->>>>>>> master
               message.text,
               style: TextStyle(
                 color: message.isUser ? Colors.white : AppColors.textPrimary,

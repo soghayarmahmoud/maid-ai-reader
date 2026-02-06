@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-=======
 import 'package:flutter/services.dart';
->>>>>>> master
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_colors.dart';
 
@@ -38,16 +35,6 @@ class _TranslateSheetState extends State<TranslateSheet> {
       _isLoading = true;
     });
 
-<<<<<<< HEAD
-    // Simulate translation (replace with actual AI translation service)
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (mounted) {
-      setState(() {
-        _translatedText = 'Simulated translation to $_selectedLanguage. Please integrate with a real translation service.';
-        _isLoading = false;
-      });
-=======
     try {
       // TODO: Integrate with Gemini AI for translation
       // Import the AI service: import '../../ai_search/data/gemini_ai_service.dart';
@@ -83,7 +70,6 @@ ${widget.text}
           SnackBar(content: Text('Translation error: $e')),
         );
       }
->>>>>>> master
     }
   }
 
@@ -127,11 +113,7 @@ ${widget.text}
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-<<<<<<< HEAD
-                value: _selectedLanguage,
-=======
                 initialValue: _selectedLanguage,
->>>>>>> master
                 decoration: const InputDecoration(
                   labelText: AppStrings.selectLanguage,
                   border: OutlineInputBorder(),
@@ -162,11 +144,6 @@ ${widget.text}
               ),
               if (_translatedText != null) ...[
                 const SizedBox(height: 16),
-<<<<<<< HEAD
-                Text(
-                  AppStrings.translatedText,
-                  style: Theme.of(context).textTheme.titleMedium,
-=======
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -188,7 +165,6 @@ ${widget.text}
                       tooltip: 'Copy to clipboard',
                     ),
                   ],
->>>>>>> master
                 ),
                 const SizedBox(height: 8),
                 Container(
@@ -198,11 +174,7 @@ ${widget.text}
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: AppColors.primary),
                   ),
-<<<<<<< HEAD
-                  child: Text(
-=======
                   child: SelectableText(
->>>>>>> master
                     _translatedText!,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),

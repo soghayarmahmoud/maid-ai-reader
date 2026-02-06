@@ -80,22 +80,6 @@ class _NotesPageState extends State<NotesPage> {
                 Navigator.pop(context);
               }
             },
-<<<<<<< HEAD
-=======
-            /*
-             # MAID AI Reader - Comprehensive Feature Enhancement
-
-            ## AI Features & PDF Analysis
-            - [/] Integrate real AI service (Google Gemini) instead of mock service
-            - [/] Add AI-powered PDF analysis and summarization
-            - [/] Implement intelligent reading assistance (explain paragraphs, simplify text)
-            - [ ] Add Google search integration from selected PDF text
-            - [ ] Implement AI-powered context-aware scrolling suggestions
-            - [ ] Add voice-to-text for AI queries
-            - [ ] Add AI-powered document comparison
-            - [ ] Implement smart content extraction and categorization
-            */
->>>>>>> master
             child: const Text(AppStrings.save),
           ),
         ],
@@ -132,11 +116,7 @@ class _NotesPageState extends State<NotesPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-<<<<<<< HEAD
-                  Icon(
-=======
                   const Icon(
->>>>>>> master
                     Icons.note_add_outlined,
                     size: 64,
                     color: AppColors.grey400,
@@ -160,43 +140,6 @@ class _NotesPageState extends State<NotesPage> {
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-<<<<<<< HEAD
-              itemCount: pdfNotes.length,
-              itemBuilder: (context, index) {
-                final note = pdfNotes[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: ListTile(
-                    title: Text(note.title),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (note.content.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            note.content,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                        const SizedBox(height: 4),
-                        Text(
-                          'Page ${note.pageNumber}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.grey600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: AppColors.error),
-                      onPressed: () {
-                        setState(() {
-                          _notes.remove(note);
-                        });
-                      },
-=======
               physics: const ClampingScrollPhysics(),
               itemCount: pdfNotes.length,
               itemBuilder: (context, index) {
@@ -235,7 +178,6 @@ class _NotesPageState extends State<NotesPage> {
                           });
                         },
                       ),
->>>>>>> master
                     ),
                   ),
                 );

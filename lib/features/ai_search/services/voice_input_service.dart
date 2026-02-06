@@ -49,7 +49,7 @@ class VoiceInputService {
     }
 
     _isListening = true;
-    
+
     await _speech.listen(
       onResult: (result) {
         if (result.finalResult) {
@@ -183,7 +183,7 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
       _animationController.stop();
     } else {
       final isAvailable = await _voiceService.initialize();
-      
+
       if (!isAvailable) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
