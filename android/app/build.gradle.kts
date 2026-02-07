@@ -24,7 +24,7 @@ android {
         applicationId = "com.example.maid_ai_reader"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 24  // Explicit minSdk for compatibility (Android 7.0+)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -43,19 +43,26 @@ android {
         }
     }
 
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // See keystore.properties.template for instructions
             signingConfig = signingConfigs.getByName("debug")
             
-            // Aggressive minification for size reduction
+            // Minification and optimization for size reduction
             isMinifyEnabled = true
             isShrinkResources = true
             
             // Remove unused resources
             isCrunchPngs = true
             isDebuggable = false
+            
+            // NDK filters - only include necessary architectures
+            ndk {
+                abiFilters.clear()
+                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86_64"))
+            }
             
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -69,12 +76,20 @@ android {
     }
     
     // Optimize packaging
-    packagingOptions {
+    packaging {
         resources.excludes.add("META-INF/DEPENDENCIES")
         resources.excludes.add("META-INF/LICENSE")
         resources.excludes.add("META-INF/LICENSE.txt")
         resources.excludes.add("META-INF/NOTICE")
         resources.excludes.add("META-INF/NOTICE.txt")
+        resources.excludes.add("META-INF/*.kotlin_module")
+    }
+    
+    // Disable unused build features for size optimization
+    buildFeatures {
+        aidl = false
+        renderScript = false
+        shaders = false
     }
 }
 

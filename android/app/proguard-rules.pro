@@ -1,10 +1,23 @@
-# Flutter wrapper
+# Flutter wrapper - comprehensive rules
 -keep class io.flutter.app.** { *; }
 -keep class io.flutter.plugin.** { *; }
 -keep class io.flutter.util.** { *; }
 -keep class io.flutter.view.** { *; }
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
+-keep class io.flutter.embedding.** { *; }
+-keep class io.flutter.embedding.engine.** { *; }
+-keep class io.flutter.embedding.engine.plugins.** { *; }
+
+# Keep all Flutter method channels
+-keepclassmembers class * {
+    @io.flutter.embedding.engine.dart.DartEntrypoint *;
+}
+
+# Keep Flutter platform channels
+-keepclassmembers class * {
+    *** callFlutterMethod(...);
+}
 
 # Play Core - these are optional, so we can safely ignore warnings
 -dontwarn com.google.android.play.core.**
@@ -77,13 +90,9 @@
     public void println(...);
 }
 
-# Aggressive optimization
--optimizationpasses 7
+# Safe optimization (aggressive flags removed to prevent crashes)
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
--verbose
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!method/marking/synchronized
--repackageclasses
 
 # Suppress warnings for commonly missing classes
 -dontwarn android.**
