@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:maid_ai_reader/core/widgets/glass_widgets.dart';
 import 'package:maid_ai_reader/features/pdf_reader/services/advanced_search_service.dart';

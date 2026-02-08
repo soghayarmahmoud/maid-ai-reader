@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// AdMob Service for managing ads
@@ -26,7 +28,6 @@ class AdMobService {
   Future<void> initialize() async {
     try {
       await MobileAds.instance.initialize();
-      print('✓ Google Mobile Ads initialized successfully');
     } catch (e) {
       print('✗ Error initializing Google Mobile Ads: $e');
     }
@@ -34,12 +35,12 @@ class AdMobService {
 
   /// Create a Banner Ad Request
   AdRequest createBannerAdRequest() {
-    return AdRequest();
+    return const AdRequest();
   }
 
   /// Create an Interstitial Ad Request
   AdRequest createInterstitialAdRequest() {
-    return AdRequest();
+    return const AdRequest();
   }
 
   /// Get Banner Ad Unit ID (use production or test)

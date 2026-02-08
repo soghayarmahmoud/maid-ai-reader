@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, avoid_print
+
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'dart:io';
 // import 'package:pdf_render/pdf_render.dart' as pdf_render; // Removed due to compatibility issues

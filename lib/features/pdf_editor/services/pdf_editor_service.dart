@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'dart:ui';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -229,7 +231,7 @@ class PdfEditorService {
           watermarkText,
           font,
           brush: PdfSolidBrush(watermarkColor),
-          bounds: Rect.fromLTWH(-200, -20, 400, 40),
+          bounds: const Rect.fromLTWH(-200, -20, 400, 40),
           format: PdfStringFormat(alignment: PdfTextAlignment.center),
         );
         

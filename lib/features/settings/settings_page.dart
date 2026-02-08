@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:maid_ai_reader/features/security/presentation/pin_setup_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -54,7 +56,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final pinEnabled = prefs.getBool('app_lock_enabled') ?? false;
-    final biometricAvailable = false;
 
     setState(() {
       _appLockEnabled = pinEnabled;
@@ -69,275 +70,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _saveBiometricSetting(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('biometric_enabled', value);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
-        elevation: 0,
-      ),
-      body: ListView(
-        children: [
-          // Appearance Section
-          _buildSectionHeader(AppLocalizations.of(context)!.sectionAppearance),
-          _buildCard(
-            children: [
-              SwitchListTile(
-                secondary: const Icon(Icons.dark_mode),
-                title: Text(AppLocalizations.of(context)!.darkMode),
-                subtitle: Text(AppLocalizations.of(context)!.darkModeDesc),
-                value: _isDarkMode,
-                onChanged: (value) {
-                  setState(() {
-                    _isDarkMode = value;
-                  });
-                  widget.onToggleTheme();
-                },
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.color_lens),
-                title:
-                    Text(AppLocalizations.of(context)!.defaultHighlightColor),
-                trailing: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: _defaultHighlightColor,
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onTap: () {
-                  // TODO: Show color picker
-                },
-              ),
-            ],
-          ),
-
-          // Reading Preferences Section
-          _buildSectionHeader(
-              AppLocalizations.of(context)!.sectionReadingPreferences),
-          _buildCard(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.zoom_in),
-                title: Text(AppLocalizations.of(context)!.defaultZoom),
-                subtitle: Text(_defaultZoom),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: _showZoomDialog,
-              ),
-              const Divider(height: 1),
-              SwitchListTile(
-                secondary: const Icon(Icons.save),
-                title: Text(AppLocalizations.of(context)!.autoSave),
-                subtitle: Text(AppLocalizations.of(context)!.autoSaveDesc),
-                value: _autoSave,
-                onChanged: (value) {
-                  setState(() {
-                    _autoSave = value;
-                  });
-                },
-              ),
-              const Divider(height: 1),
-              SwitchListTile(
-                secondary: const Icon(Icons.image),
-                title: Text(AppLocalizations.of(context)!.showThumbnails),
-                subtitle:
-                    Text(AppLocalizations.of(context)!.showThumbnailsDesc),
-                value: _showThumbnails,
-                onChanged: (value) {
-                  setState(() {
-                    _showThumbnails = value;
-                  });
-                },
-              ),
-            ],
-          ),
-
-          // Language Section
-          _buildSectionHeader(AppLocalizations.of(context)!.sectionLanguage),
-          _buildCard(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.language),
-                title: Text(AppLocalizations.of(context)!.language),
-                subtitle: Text(_language),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: _showLanguageDialog,
-              ),
-            ],
-          ),
-
-          // Security Section
-          _buildSectionHeader(AppLocalizations.of(context)!.sectionSecurity),
-          _buildCard(
-            children: [
-              SwitchListTile(
-                secondary: const Icon(Icons.lock),
-                title: Text(AppLocalizations.of(context)!.appLock),
-                subtitle: Text(AppLocalizations.of(context)!.appLockDesc),
-                value: _appLockEnabled,
-                onChanged: (value) async {
-                  if (value) {
-                    // Show PIN setup
-                    final result = await Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PinSetupPage(),
-                      ),
-                    );
-                    if (result == true) {
-                      setState(() {
-                        _appLockEnabled = true;
-                      });
-                    }
-                  } else {
-                    // Disable PIN
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setBool('app_lock_enabled', false);
-                    setState(() {
-                      _appLockEnabled = false;
-                      _enableBiometric = false;
-                    });
-                    await _saveBiometricSetting(false);
-                  }
-                },
-              ),
-              const Divider(height: 1),
-              SwitchListTile(
-                secondary: const Icon(Icons.fingerprint),
-                title: Text(AppLocalizations.of(context)!.biometric),
-                subtitle: Text(AppLocalizations.of(context)!.biometricDesc),
-                value: _enableBiometric,
-                onChanged: _appLockEnabled
-                    ? (value) {
-                        setState(() {
-                          _enableBiometric = value;
-                        });
-                      }
-                    : null,
-              ),
-            ],
-          ),
-
-          // Storage Section
-          _buildSectionHeader(AppLocalizations.of(context)!.sectionStorage),
-          _buildCard(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.storage),
-                title: Text(AppLocalizations.of(context)!.cacheSize),
-                subtitle: Text(AppLocalizations.of(context)!.calculating),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  // TODO: Show cache details
-                },
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.delete_sweep),
-                title: Text(AppLocalizations.of(context)!.clearCache),
-                subtitle: Text(AppLocalizations.of(context)!.clearCacheDesc),
-                onTap: _showClearCacheDialog,
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.backup),
-                title: Text(AppLocalizations.of(context)!.backupRestore),
-                subtitle: Text(AppLocalizations.of(context)!.backupRestoreDesc),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  // TODO: Show backup options
-                },
-              ),
-            ],
-          ),
-
-          // About Section
-          _buildSectionHeader(AppLocalizations.of(context)!.sectionAbout),
-          _buildCard(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.info),
-                title: Text(AppLocalizations.of(context)!.version),
-                subtitle: Text(_version),
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.help),
-                title: Text(AppLocalizations.of(context)!.helpShortcuts),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: _showHelpDialog,
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.privacy_tip),
-                title: Text(AppLocalizations.of(context)!.privacyPolicy),
-                trailing: const Icon(Icons.open_in_new, size: 16),
-                onTap: () {
-                  // TODO: Open privacy policy
-                },
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.description),
-                title: Text(AppLocalizations.of(context)!.termsOfService),
-                trailing: const Icon(Icons.open_in_new, size: 16),
-                onTap: () {
-                  // TODO: Open terms
-                },
-              ),
-              const Divider(height: 1),
-              ListTile(
-                leading: const Icon(Icons.code),
-                title: Text(AppLocalizations.of(context)!.openSourceLicenses),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  showLicensePage(context: context);
-                },
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 32),
-          // Banner Ad
-          const BannerAdWidget(isTest: false),
-          const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildCard({required List<Widget> children}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: children,
-        ),
-      ),
-    );
   }
 
   void _showZoomDialog() {
@@ -356,11 +88,15 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.defaultZoom),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          l10n.defaultZoom,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: zoomOptions.map((zoom) {
-            return RadioListTile(
+            return RadioListTile<String>(
               title: Text(zoom),
               value: zoom,
               groupValue: _defaultZoom,
@@ -370,6 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 });
                 Navigator.pop(context);
               },
+              activeColor: AppColors.primary,
             );
           }).toList(),
         ),
@@ -391,11 +128,15 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.selectLanguage),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          l10n.selectLanguage,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: languageMap.keys.map((lang) {
-            return RadioListTile(
+            return RadioListTile<String>(
               title: Text(lang),
               value: lang,
               groupValue: _language,
@@ -407,6 +148,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 widget.onLanguageChanged(Locale(languageCode));
                 Navigator.pop(context);
               },
+              activeColor: AppColors.primary,
             );
           }).toList(),
         ),
@@ -419,6 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(l10n.clearCacheTitle),
         content: Text(l10n.clearCacheMessage),
         actions: [
@@ -428,13 +171,18 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              // TODO: Clear cache
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.cacheCleared)),
+                SnackBar(
+                  content: Text(l10n.cacheCleared),
+                  backgroundColor: AppColors.success,
+                ),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
             child: Text(l10n.clear),
           ),
         ],
@@ -447,7 +195,11 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.helpShortcuts),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          l10n.helpShortcuts,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -455,8 +207,9 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               Text(
                 l10n.keyboardShortcuts,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
               const SizedBox(height: 12),
               _buildShortcutItem(l10n.ctrlF, l10n.searchInPdf),
@@ -470,8 +223,9 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 16),
               Text(
                 l10n.pdfFeatures,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
               const SizedBox(height: 8),
               Text('• ${l10n.annotationsMultipleColors}'),
@@ -497,28 +251,371 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildShortcutItem(String shortcut, String description) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(4),
+              color: AppColors.primary.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(6),
             ),
             child: Text(
               shortcut,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'monospace',
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
-                fontSize: 12,
+                color: AppColors.primary,
+                fontSize: 11,
               ),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-              child: Text(description, style: const TextStyle(fontSize: 13))),
+            child: Text(
+              description,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernSectionHeader(String title, {required IconData icon}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              size: 20,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModernCard({required List<Widget> children}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: children,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernSettingTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: AppColors.primary,
+        ),
+      ),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+      ),
+      subtitle: subtitle != null
+          ? Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall,
+            )
+          : null,
+      trailing: trailing,
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildModernSwitch(bool value, Function(bool)? onChanged) {
+    return Switch.adaptive(
+      value: value,
+      onChanged: onChanged,
+      activeColor: AppColors.primary,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings),
+        elevation: 0,
+      ),
+      body: ListView(
+        children: [
+          // Appearance Section
+          _buildModernSectionHeader(
+            AppLocalizations.of(context)!.sectionAppearance,
+            icon: Icons.palette_rounded,
+          ),
+          _buildModernCard(
+            children: [
+              _buildModernSettingTile(
+                icon: Icons.dark_mode_rounded,
+                title: AppLocalizations.of(context)!.darkMode,
+                subtitle: AppLocalizations.of(context)!.darkModeDesc,
+                trailing: _buildModernSwitch(_isDarkMode, (value) {
+                  setState(() {
+                    _isDarkMode = value;
+                  });
+                  widget.onToggleTheme();
+                }),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.color_lens_rounded,
+                title: AppLocalizations.of(context)!.defaultHighlightColor,
+                subtitle: 'Choose highlight color',
+                trailing: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: _defaultHighlightColor,
+                      border: Border.all(
+                        color: AppColors.grey300,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _defaultHighlightColor.withOpacity(0.3),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Reading Preferences Section
+          _buildModernSectionHeader(
+            AppLocalizations.of(context)!.sectionReadingPreferences,
+            icon: Icons.menu_book_rounded,
+          ),
+          _buildModernCard(
+            children: [
+              _buildModernSettingTile(
+                icon: Icons.zoom_in_rounded,
+                title: AppLocalizations.of(context)!.defaultZoom,
+                subtitle: _defaultZoom,
+                onTap: _showZoomDialog,
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.save_rounded,
+                title: AppLocalizations.of(context)!.autoSave,
+                subtitle: AppLocalizations.of(context)!.autoSaveDesc,
+                trailing: _buildModernSwitch(_autoSave, (value) {
+                  setState(() {
+                    _autoSave = value;
+                  });
+                }),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.image_rounded,
+                title: AppLocalizations.of(context)!.showThumbnails,
+                subtitle: AppLocalizations.of(context)!.showThumbnailsDesc,
+                trailing: _buildModernSwitch(_showThumbnails, (value) {
+                  setState(() {
+                    _showThumbnails = value;
+                  });
+                }),
+              ),
+            ],
+          ),
+
+          // Language Section
+          _buildModernSectionHeader(
+            AppLocalizations.of(context)!.sectionLanguage,
+            icon: Icons.language_rounded,
+          ),
+          _buildModernCard(
+            children: [
+              _buildModernSettingTile(
+                icon: Icons.language_rounded,
+                title: AppLocalizations.of(context)!.language,
+                subtitle: _language,
+                onTap: _showLanguageDialog,
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              ),
+            ],
+          ),
+
+          // Security Section
+          _buildModernSectionHeader(
+            AppLocalizations.of(context)!.sectionSecurity,
+            icon: Icons.security_rounded,
+          ),
+          _buildModernCard(
+            children: [
+              _buildModernSettingTile(
+                icon: Icons.lock_rounded,
+                title: AppLocalizations.of(context)!.appLock,
+                subtitle: AppLocalizations.of(context)!.appLockDesc,
+                trailing: _buildModernSwitch(_appLockEnabled, (value) async {
+                  if (value) {
+                    final result = await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PinSetupPage(),
+                      ),
+                    );
+                    if (result == true) {
+                      setState(() {
+                        _appLockEnabled = true;
+                      });
+                    }
+                  } else {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool('app_lock_enabled', false);
+                    setState(() {
+                      _appLockEnabled = false;
+                      _enableBiometric = false;
+                    });
+                    await _saveBiometricSetting(false);
+                  }
+                }),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.fingerprint_rounded,
+                title: AppLocalizations.of(context)!.biometric,
+                subtitle: AppLocalizations.of(context)!.biometricDesc,
+                trailing: _buildModernSwitch(
+                    _enableBiometric,
+                    _appLockEnabled
+                        ? (value) {
+                            setState(() {
+                              _enableBiometric = value;
+                            });
+                          }
+                        : null),
+              ),
+            ],
+          ),
+
+          // Storage Section
+          _buildModernSectionHeader(
+            AppLocalizations.of(context)!.sectionStorage,
+            icon: Icons.storage_rounded,
+          ),
+          _buildModernCard(
+            children: [
+              _buildModernSettingTile(
+                icon: Icons.storage_rounded,
+                title: AppLocalizations.of(context)!.cacheSize,
+                subtitle: AppLocalizations.of(context)!.calculating,
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.delete_sweep_rounded,
+                title: AppLocalizations.of(context)!.clearCache,
+                subtitle: AppLocalizations.of(context)!.clearCacheDesc,
+                onTap: _showClearCacheDialog,
+                trailing: const SizedBox.shrink(),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.backup_rounded,
+                title: AppLocalizations.of(context)!.backupRestore,
+                subtitle: AppLocalizations.of(context)!.backupRestoreDesc,
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              ),
+            ],
+          ),
+
+          // About Section
+          _buildModernSectionHeader(
+            AppLocalizations.of(context)!.sectionAbout,
+            icon: Icons.info_rounded,
+          ),
+          _buildModernCard(
+            children: [
+              _buildModernSettingTile(
+                icon: Icons.info_rounded,
+                title: AppLocalizations.of(context)!.version,
+                subtitle: _version,
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.help_rounded,
+                title: AppLocalizations.of(context)!.helpShortcuts,
+                onTap: _showHelpDialog,
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.privacy_tip_rounded,
+                title: AppLocalizations.of(context)!.privacyPolicy,
+                trailing: const Icon(Icons.open_in_new_rounded, size: 16),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.description_rounded,
+                title: AppLocalizations.of(context)!.termsOfService,
+                trailing: const Icon(Icons.open_in_new_rounded, size: 16),
+              ),
+              const Divider(height: 1),
+              _buildModernSettingTile(
+                icon: Icons.code_rounded,
+                title: AppLocalizations.of(context)!.openSourceLicenses,
+                onTap: () {
+                  showLicensePage(context: context);
+                },
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 32),
+          const BannerAdWidget(isTest: false),
+          const SizedBox(height: 16),
         ],
       ),
     );

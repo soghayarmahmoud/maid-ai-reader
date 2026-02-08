@@ -35,6 +35,22 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
   final List<int> _bookmarks = [];
   bool _showBookmarks = false;
 
+  // Color customization
+  Color _highlightColor = Colors.yellow;
+  Color _underlineColor = Colors.red;
+  final List<Color> _colorPalette = [
+    Colors.yellow,
+    Colors.yellow.shade700,
+    Colors.green,
+    Colors.blue,
+    Colors.red,
+    Colors.pink,
+    Colors.purple,
+    Colors.orange,
+    Colors.cyan,
+    Colors.amber,
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -216,6 +232,81 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
     }
   }
 
+  void _showColorPickerMenu(BuildContext context, AnnotationMode mode) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Choose ${mode == AnnotationMode.highlight ? 'Highlight' : 'Underline'} Color',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: _colorPalette.map((color) {
+                final isSelected = mode == AnnotationMode.highlight
+                    ? color == _highlightColor
+                    : color == _underlineColor;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (mode == AnnotationMode.highlight) {
+                        _highlightColor = color;
+                      } else {
+                        _underlineColor = color;
+                      }
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: color,
+                      border: Border.all(
+                        color: isSelected ? Colors.black : Colors.grey,
+                        width: isSelected ? 3 : 1,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: color.withOpacity(0.4),
+                                blurRadius: 8,
+                                spreadRadius: 2,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: isSelected
+                        ? const Icon(
+                            Icons.check_rounded,
+                            color: Colors.black,
+                            size: 24,
+                          )
+                        : null,
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _handleKeyEvent(KeyEvent event) {
     if (event is KeyDownEvent) {
       if (HardwareKeyboard.instance.isControlPressed) {
@@ -258,134 +349,270 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
   @override
   Widget build(BuildContext context) {
     final fileName = widget.filePath.split('/').last;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return KeyboardListener(
       focusNode: _focusNode,
       onKeyEvent: _handleKeyEvent,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(fileName),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                fileName,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                'Page $_currentPage of $_totalPages',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+          elevation: 0,
           actions: [
             IconButton(
-              icon: const Icon(Icons.search),
+              icon: const Icon(Icons.search_rounded),
               onPressed: _toggleSearch,
               tooltip: 'Search (Ctrl+F)',
             ),
             IconButton(
-              icon: const Icon(Icons.build),
+              icon: const Icon(Icons.construction_rounded),
               onPressed: _toggleToolbar,
               tooltip: 'Tools (Ctrl+T)',
             ),
             IconButton(
-              icon: const Icon(Icons.bookmark_border),
+              icon: Icon(
+                _bookmarks.contains(_currentPage)
+                    ? Icons.bookmark_rounded
+                    : Icons.bookmark_border_rounded,
+              ),
               onPressed: _addBookmark,
-              tooltip: 'Add Bookmark (Ctrl+B)',
+              tooltip: 'Bookmark (Ctrl+B)',
             ),
             IconButton(
-              icon: const Icon(Icons.bookmarks),
+              icon: const Icon(Icons.bookmarks_rounded),
               onPressed: _toggleBookmarks,
-              tooltip: 'Show Bookmarks',
+              tooltip: 'View Bookmarks',
             ),
-            IconButton(
-              icon: const Icon(Icons.chat_bubble_outline),
-              onPressed: _showAiChat,
-              tooltip: AppStrings.aiSearch,
-            ),
-            IconButton(
-              icon: const Icon(Icons.note_add),
-              onPressed: _showNotes,
-              tooltip: AppStrings.smartNotes,
-            ),
-            IconButton(
-              icon: const Icon(Icons.translate),
-              onPressed: _showTranslator,
-              tooltip: AppStrings.translator,
+            PopupMenuButton(
+              icon: const Icon(Icons.more_vert_rounded),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  onTap: _showAiChat,
+                  child:  const Row(
+                    children: [
+                      Icon(Icons.chat_bubble_rounded),
+                      SizedBox(width: 12),
+                      Text('AI Chat'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  onTap: _showNotes,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.note_add_rounded),
+                      SizedBox(width: 12),
+                      Text('Smart Notes'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  onTap: _showTranslator,
+                  child: const Row(
+                    children: [
+                      Icon(Icons.translate_rounded),
+                      SizedBox(width: 12),
+                      Text('Translate'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
         body: Column(
           children: [
+            // Modern Search Bar
             if (_isSearching)
               Container(
-                padding: const EdgeInsets.all(8.0),
-                color: AppColors.grey200,
+                padding: const EdgeInsets.all(12.0),
+                color: isDark ? AppColors.surfaceDark : AppColors.grey100,
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: AppStrings.searchInPdf,
-                          border: OutlineInputBorder(),
-                          contentPadding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                            ),
+                          ],
                         ),
-                        onSubmitted: (_) => _performSearch(),
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: const InputDecoration(
+                            hintText: 'Search in PDF',
+                            border: InputBorder.none,
+                            prefixIcon:  Icon(
+                              Icons.search_rounded,
+                              color: AppColors.primary,
+                            ),
+                            contentPadding:  EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            isDense: true,
+                          ),
+                          onSubmitted: (_) => _performSearch(),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: _performSearch,
+                    const SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.search_rounded,
+                            color: Colors.white),
+                        onPressed: _performSearch,
+                        constraints: const BoxConstraints(
+                          minWidth: 40,
+                          minHeight: 40,
+                        ),
+                      ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: _toggleSearch,
+                    const SizedBox(width: 4),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? AppColors.grey800 : AppColors.grey200,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: _toggleSearch,
+                        constraints: const BoxConstraints(
+                          minWidth: 40,
+                          minHeight: 40,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
+            // Modern Toolbar
             if (_showToolbar)
               Container(
-                padding: const EdgeInsets.all(8.0),
-                color: Theme.of(context).cardColor,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                padding: const EdgeInsets.all(12.0),
+                color: isDark ? AppColors.surfaceDark : AppColors.grey100,
+                child: Column(
                   children: [
-                    _buildAnnotationButton(AnnotationMode.highlight,
-                        Icons.highlight, 'Highlight (Ctrl+H)'),
-                    _buildAnnotationButton(AnnotationMode.underline,
-                        Icons.format_underlined, 'Underline (Ctrl+U)'),
-                    _buildAnnotationButton(AnnotationMode.strikeout,
-                        Icons.strikethrough_s, 'Strikeout (Ctrl+S)'),
-                    _buildAnnotationButton(AnnotationMode.comment,
-                        Icons.comment, 'Comment (Ctrl+C)'),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildModernAnnotationButton(
+                          AnnotationMode.highlight,
+                          Icons.highlight_rounded,
+                          'Highlight',
+                        ),
+                        _buildModernAnnotationButton(
+                          AnnotationMode.underline,
+                          Icons.format_underlined,
+                          'Underline',
+                        ),
+                        _buildModernAnnotationButton(
+                          AnnotationMode.strikeout,
+                          Icons.strikethrough_s,
+                          'Strikeout',
+                        ),
+                        _buildModernAnnotationButton(
+                          AnnotationMode.comment,
+                          Icons.comment_rounded,
+                          'Comment',
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-            if (_showBookmarks)
+            // Modern Bookmarks Section
+            if (_showBookmarks && _bookmarks.isNotEmpty)
               Container(
-                padding: const EdgeInsets.all(8.0),
-                color: Theme.of(context).cardColor,
-                height: 100,
-                child: _bookmarks.isEmpty
-                    ? const Center(child: Text('No bookmarks yet'))
-                    : ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _bookmarks.length,
-                        itemBuilder: (context, index) {
-                          final page = _bookmarks[index];
-                          return Container(
-                            width: 80,
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Card(
-                              child: InkWell(
-                                onTap: () => _jumpToBookmark(page),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Page $page'),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, size: 16),
-                                      onPressed: () => _removeBookmark(page),
-                                    ),
-                                  ],
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                color: isDark ? AppColors.surfaceDark : AppColors.grey100,
+                child: SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: _bookmarks.length,
+                    itemBuilder: (context, index) {
+                      final page = _bookmarks[index];
+                      return GestureDetector(
+                        onTap: () => _jumpToBookmark(page),
+                        child: Container(
+                          width: 80,
+                          margin: const EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                            color: _currentPage == page
+                                ? AppColors.primary
+                                : Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _currentPage == page
+                                  ? AppColors.primary
+                                  : AppColors.grey300,
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Pg $page',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: _currentPage == page
+                                      ? Colors.white
+                                      : AppColors.textPrimary,
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                              const SizedBox(height: 4),
+                              GestureDetector(
+                                onTap: () => _removeBookmark(page),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 16,
+                                  color: _currentPage == page
+                                      ? Colors.white
+                                      : AppColors.error,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
+            // PDF Viewer
             Expanded(
               child: RepaintBoundary(
                 child: SfPdfViewer.file(
@@ -408,8 +635,9 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                 ),
               ),
             ),
+            // Modern Bottom Navigation Bar
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 boxShadow: [
@@ -423,20 +651,67 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: _currentPage > 1 ? _previousPage : null,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.chevron_left_rounded,
+                          color: AppColors.primary),
+                      onPressed: _currentPage > 1 ? _previousPage : null,
+                      constraints: const BoxConstraints(
+                        minWidth: 40,
+                        minHeight: 40,
+                      ),
+                    ),
                   ),
                   GestureDetector(
                     onTap: _jumpToPage,
-                    child: Text(
-                      '${AppStrings.page} $_currentPage ${AppStrings.of} $_totalPages',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '$_currentPage / $_totalPages',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.primary,
+                                ),
+                          ),
+                          Text(
+                            'tap to jump',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_forward),
-                    onPressed: _currentPage < _totalPages ? _nextPage : null,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.chevron_right_rounded,
+                          color: AppColors.primary),
+                      onPressed: _currentPage < _totalPages ? _nextPage : null,
+                      constraints: const BoxConstraints(
+                        minWidth: 40,
+                        minHeight: 40,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -449,14 +724,88 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
     );
   }
 
-  Widget _buildAnnotationButton(
-      AnnotationMode mode, IconData icon, String tooltip) {
-    return IconButton(
-      icon: Icon(icon,
-          color:
-              _annotationMode == mode ? Theme.of(context).primaryColor : null),
-      onPressed: () => _setAnnotationMode(mode),
-      tooltip: tooltip,
+  Widget _buildModernAnnotationButton(
+    AnnotationMode mode,
+    IconData icon,
+    String label,
+  ) {
+    final isActive = _annotationMode == mode;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: isActive
+                    ? AppColors.primary
+                    : AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  icon,
+                  color: isActive ? Colors.white : AppColors.primary,
+                ),
+                onPressed: () => _setAnnotationMode(mode),
+                constraints: const BoxConstraints(
+                  minWidth: 50,
+                  minHeight: 50,
+                ),
+              ),
+            ),
+            // Color picker button for highlight and underline
+            if ((mode == AnnotationMode.highlight ||
+                    mode == AnnotationMode.underline) &&
+                isActive)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: mode == AnnotationMode.highlight
+                        ? _highlightColor
+                        : _underlineColor,
+                    border: Border.all(
+                      color: isDark ? AppColors.grey700 : AppColors.grey300,
+                      width: 2,
+                    ),
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(12),
+                      bottomLeft: Radius.circular(8),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: GestureDetector(
+                    onTap: () => _showColorPickerMenu(context, mode),
+                    child: const Padding(
+                      padding: EdgeInsets.all(4),
+                      child: Icon(
+                        Icons.palette_rounded,
+                        size: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: isActive ? AppColors.primary : AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+      ],
     );
   }
 }

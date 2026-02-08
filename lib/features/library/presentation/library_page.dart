@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:maid_ai_reader/core/constants/app_colors.dart';
@@ -23,12 +25,13 @@ class _LibraryPageState extends State<LibraryPage>
   final List<File> _recentFiles = [];
   late TabController _tabController;
   bool _isLoading = false;
-  final ReadingProgressRepository _progressRepo = ReadingProgressRepository();
+  late ReadingProgressRepository _progressRepo;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _progressRepo = ReadingProgressRepository();
     _initializeProgress();
 
     // Load interstitial ad in background
@@ -43,7 +46,7 @@ class _LibraryPageState extends State<LibraryPage>
 
   Future<void> _initializeProgress() async {
     try {
-      // Check if repository is already initialized
+      // Initialize repository if not already done
       if (!_progressRepo.isInitialized) {
         await _progressRepo.initialize();
       }
@@ -52,29 +55,44 @@ class _LibraryPageState extends State<LibraryPage>
     } catch (e, stackTrace) {
       print('✗ Error initializing progress repository: $e');
       print('Stack trace: $stackTrace');
-      // Show snackbar with error but let app continue
+      // Show snackbar with error but let app continue - delayed to avoid inherited widget error
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Library loading error: $e'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Library loading: ${e.toString()}'),
+                backgroundColor: AppColors.error,
+                duration: const Duration(seconds: 4),
+              ),
+            );
+          }
+        });
       }
     }
   }
 
   void _loadRecentFiles() {
-    final recentProgress = _progressRepo.getRecentFiles(limit: 20);
-    setState(() {
-      _recentFiles.clear();
-      for (var progress in recentProgress) {
-        if (File(progress.pdfPath).existsSync()) {
-          _recentFiles.add(File(progress.pdfPath));
+    if (!_progressRepo.isInitialized) {
+      setState(() {
+        _recentFiles.clear();
+      });
+      return;
+    }
+
+    try {
+      final recentProgress = _progressRepo.getRecentFiles(limit: 20);
+      setState(() {
+        _recentFiles.clear();
+        for (var progress in recentProgress) {
+          if (File(progress.pdfPath).existsSync()) {
+            _recentFiles.add(File(progress.pdfPath));
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      print('Error loading recent files: $e');
+    }
   }
 
   Future<void> _pickFile() async {
@@ -95,7 +113,10 @@ class _LibraryPageState extends State<LibraryPage>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error picking file: $e')),
+          SnackBar(
+            content: Text('Error picking file: $e'),
+            backgroundColor: AppColors.error,
+          ),
         );
       }
       print('Error in _pickFile: $e');
@@ -114,8 +135,8 @@ class _LibraryPageState extends State<LibraryPage>
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content:
-                  Text(l10n?.fileNotFound ?? FallbackStrings.fileNotFound)),
+              content: Text(l10n?.fileNotFound ?? FallbackStrings.fileNotFound),
+              backgroundColor: AppColors.error),
         );
       }
       return;
@@ -156,41 +177,62 @@ class _LibraryPageState extends State<LibraryPage>
     return file.path.split(Platform.pathSeparator).last;
   }
 
+  String _getFileSize(File file) {
+    try {
+      final bytes = file.lengthSync();
+      if (bytes < 1024) return '$bytes B';
+      if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    } catch (e) {
+      return 'Unknown';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context) ?? AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.appName),
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Theme.of(context).colorScheme.primary,
-          indicatorWeight: 3,
-          labelColor: Theme.of(context).colorScheme.primary,
-          unselectedLabelColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.grey.shade700
-              : Colors.grey.shade400,
+          indicatorColor: AppColors.primary,
+          indicatorWeight: 4,
+          labelColor: AppColors.primary,
+          unselectedLabelColor:
+              isDark ? Colors.grey.shade500 : Colors.grey.shade700,
           labelStyle: const TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
           unselectedLabelStyle: const TextStyle(
             fontSize: 14,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.w500,
           ),
+          splashFactory: NoSplash.splashFactory,
           tabs: [
             Tab(
-                icon: const Icon(Icons.history),
-                text: l10n?.recent ?? FallbackStrings.recent),
+              icon: Icon(Icons.history_rounded,
+                  color: _tabController.index == 0
+                      ? AppColors.primary
+                      : (isDark ? Colors.grey.shade500 : Colors.grey.shade700)),
+              text: l10n?.recent ?? FallbackStrings.recent,
+            ),
             Tab(
-                icon: const Icon(Icons.folder),
-                text: l10n?.allFiles ?? FallbackStrings.allFiles),
+              icon: Icon(Icons.folder_rounded,
+                  color: _tabController.index == 1
+                      ? AppColors.primary
+                      : (isDark ? Colors.grey.shade500 : Colors.grey.shade700)),
+              text: l10n?.allFiles ?? FallbackStrings.allFiles,
+            ),
           ],
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_rounded),
             onPressed: () {
               Navigator.pushNamed(context, '/settings');
             },
@@ -223,10 +265,10 @@ class _LibraryPageState extends State<LibraryPage>
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-            : const Icon(Icons.add),
+            : const Icon(Icons.add_rounded),
         label: Text(_isLoading
-            ? l10n?.opening ?? FallbackStrings.opening
-            : l10n?.openPdf ?? FallbackStrings.openPdf),
+            ? (l10n?.opening ?? FallbackStrings.opening)
+            : (l10n?.openPdf ?? FallbackStrings.openPdf)),
       ),
     );
   }
@@ -240,7 +282,7 @@ class _LibraryPageState extends State<LibraryPage>
         icon: Icons.description_outlined,
         onAction: _pickFile,
         actionButtonText: l10n?.openPdf ?? FallbackStrings.openPdf,
-        actionIcon: Icons.add,
+        actionIcon: Icons.add_rounded,
       );
     }
 
@@ -249,68 +291,112 @@ class _LibraryPageState extends State<LibraryPage>
       itemCount: _recentFiles.length,
       itemBuilder: (context, index) {
         final file = _recentFiles[index];
-        final progress = _progressRepo.getProgress(file.path);
+        final progress = _progressRepo.isInitialized
+            ? _progressRepo.getProgress(file.path)
+            : null;
         final fileName = _getFileName(file);
+        final fileSize = _getFileSize(file);
+        final progressPercent = progress?.progressPercentage ?? 0.0;
 
         return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: InkWell(
-                onTap: () => _openPdf(file),
-                borderRadius: BorderRadius.circular(12),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: InkWell(
+            onTap: () => _openPdf(file),
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  // PDF Icon with background
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.primary.withOpacity(0.2),
+                          AppColors.primary.withOpacity(0.1),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.picture_as_pdf_rounded,
+                      size: 32,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // File info
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          fileName,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
                         Row(
                           children: [
-                            Expanded(
-                              child: Container(
+                            Text(
+                              fileSize,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            const SizedBox(width: 12),
+                            if (progress != null) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
-                                  borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(12)),
+                                  color: AppColors.secondary.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.picture_as_pdf,
-                                    size: 48,
-                                    color: AppColors.primary,
+                                child: Text(
+                                  '${progressPercent.toStringAsFixed(0)}%',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.secondary,
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    fileName,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    file.path,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            ],
                           ],
                         ),
-                      ]),
-                )));
+                        const SizedBox(height: 6),
+                        // Progress bar
+                        if (progress != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: LinearProgressIndicator(
+                              value: progressPercent / 100,
+                              minHeight: 3,
+                              backgroundColor: AppColors.grey300,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.secondary,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Action icon
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 18,
+                    color: AppColors.grey500,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -320,10 +406,10 @@ class _LibraryPageState extends State<LibraryPage>
     return EmptyStateWidget(
       title: l10n?.allFilesTitle ?? FallbackStrings.allFilesTitle,
       message: l10n?.allFilesMsg ?? FallbackStrings.allFilesMsg,
-      icon: Icons.folder_outlined,
+      icon: Icons.folder_open_rounded,
       onAction: _pickFile,
       actionButtonText: l10n?.openPdf ?? FallbackStrings.openPdf,
-      actionIcon: Icons.add,
+      actionIcon: Icons.add_rounded,
     );
   }
 

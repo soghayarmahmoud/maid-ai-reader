@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
 import 'di/service_locator.dart';
@@ -13,20 +12,13 @@ void main() async {
   try {
     // Initialize Hive first
     await Hive.initFlutter();
-    print('✓ Hive initialized successfully');
-
     // Initialize Ad Mob
     await AdMobService().initialize();
-    print('✓ AdMob initialized successfully');
-
     // Initialize dependencies
     await initializeDependencies();
-    print('✓ Dependencies initialized successfully');
-
     runApp(const MyAppWithSecurity());
   } catch (e, stackTrace) {
-    print('✗ Fatal initialization error: $e');
-    print('Stack trace: $stackTrace');
+
     // Show error UI
     runApp(
       MaterialApp(

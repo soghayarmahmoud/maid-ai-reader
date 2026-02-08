@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -66,7 +68,7 @@ class ReadingProgressRepository {
   late Box<ReadingProgressModel> _progressBox;
 
   // Public getter to check if box is initialized
-  bool get isInitialized => _progressBox != null && _progressBox.isOpen;
+  bool get isInitialized => _progressBox.isOpen;
 
   Future<void> initialize() async {
     try {

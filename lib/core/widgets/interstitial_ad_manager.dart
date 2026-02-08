@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../services/admob_service.dart';
 
@@ -14,15 +16,13 @@ class InterstitialAdManager {
 
   InterstitialAd? _interstitialAd;
   bool _isInterstitialAdLoaded = false;
-  bool _isTest = false;
 
   /// Load an Interstitial Ad
   Future<void> loadInterstitialAd({bool isTest = false}) async {
-    _isTest = isTest;
     try {
       await InterstitialAd.load(
         adUnitId: AdMobService().getInterstitialAdUnitId(isTest: isTest),
-        request: AdRequest(),
+        request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (ad) {
             _interstitialAd = ad;

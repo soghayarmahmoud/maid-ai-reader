@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../services/pdf_editor_service.dart';
@@ -385,7 +387,7 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
   }
 
   Future<void> _exportPdf() async {
-    final outputPath = '${widget.pdfPath.replaceAll('.pdf', '_edited.pdf')}';
+    final outputPath = widget.pdfPath.replaceAll('.pdf', '_edited.pdf');
     
     final success = await _editorService.exportPdf(
       sourcePath: widget.pdfPath,

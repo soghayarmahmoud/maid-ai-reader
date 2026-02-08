@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter/services.dart';
 
