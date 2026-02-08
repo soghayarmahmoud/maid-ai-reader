@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../ai_search/data/gemini_ai_service.dart';
 
 class TranslateSheet extends StatefulWidget {
   final String text;
@@ -36,27 +37,18 @@ class _TranslateSheetState extends State<TranslateSheet> {
     });
 
     try {
-      // TODO: Integrate with Gemini AI for translation
-      // Import the AI service: import '../../ai_search/data/gemini_ai_service.dart';
-      // final aiService = GeminiAiService();
-      // await aiService.initialize();
-      // final translated = await aiService.translateText(widget.text, _selectedLanguage);
-      
-      // For now, simulate translation with a more realistic message
-      await Future.delayed(const Duration(seconds: 1));
+      final aiService = GeminiAiService();
+      await aiService.initialize();
+      final prompt =
+          '''Translate the following text to $_selectedLanguage. Keep tone and formatting, return only the translation.
+
+${widget.text}
+''';
+      final translated = await aiService.askQuestion(prompt);
 
       if (mounted) {
         setState(() {
-          _translatedText = '''[AI Translation to $_selectedLanguage]
-
-${widget.text}
-
----
-⚠️ To enable real translation:
-1. Add your Gemini API key in Settings
-2. The AI will translate this text automatically
-3. This is a placeholder until AI is configured
-          ''';
+          _translatedText = translated;
           _isLoading = false;
         });
       }
@@ -154,7 +146,8 @@ ${widget.text}
                     IconButton(
                       icon: const Icon(Icons.copy, size: 20),
                       onPressed: () {
-                        Clipboard.setData(ClipboardData(text: _translatedText!));
+                        Clipboard.setData(
+                            ClipboardData(text: _translatedText!));
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Translation copied to clipboard!'),

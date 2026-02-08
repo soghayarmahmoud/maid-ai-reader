@@ -75,7 +75,7 @@ Format: Brief description | suggested page number
 ''';
 
       final response = await _aiService.sendChatMessage(prompt);
-      
+
       return _parseScrollSuggestions(response);
     } catch (e) {
       print('Error getting scroll suggestions: $e');
@@ -89,22 +89,59 @@ Format: Brief description | suggested page number
     required List<String> targetTexts,
   }) async {
     final sections = <SimilarSection>[];
+    // Simple semantic similarity fallback: compute token overlap score
+    for (int i = 0; i < targetTexts.length; i++) {
+      final t = targetTexts[i];
+      final score = _jaccardSimilarity(sourceText, t);
+      if (score > 0.2) {
+        sections.add(
+            SimilarSection(text: t, pageNumber: i + 1, similarityScore: score));
+      }
+    }
 
-    // TODO: Implement semantic similarity using AI
-    // For now, use simple text matching
-    
     return sections;
   }
 
   // Helper methods
   List<String> _extractDifferences(String aiResponse) {
-    // TODO: Parse AI response and extract differences
-    return ['Difference 1', 'Difference 2'];
+    // Try to extract numbered lines or bullet points as differences
+    final lines = aiResponse.split('\n');
+    final diffs = <String>[];
+    for (final l in lines) {
+      final trimmed = l.trim();
+      if (trimmed.startsWith('1.') ||
+          trimmed.startsWith('-') ||
+          trimmed.toLowerCase().contains('difference')) {
+        diffs.add(trimmed.replaceAll(RegExp(r'^\d+\.|^-'), '').trim());
+      }
+    }
+    if (diffs.isEmpty) {
+      // fallback: take first two sentences
+      final sentences = aiResponse.split(RegExp(r'[\.!?]\s'));
+      for (int i = 0; i < sentences.length && i < 2; i++) {
+        diffs.add(sentences[i].trim());
+      }
+    }
+    return diffs;
   }
 
   List<String> _extractSimilarities(String aiResponse) {
-    // TODO: Parse AI response and extract similarities
-    return ['Similarity 1', 'Similarity 2'];
+    final lines = aiResponse.split('\n');
+    final sims = <String>[];
+    for (final l in lines) {
+      final trimmed = l.trim();
+      if (trimmed.toLowerCase().contains('similar') ||
+          trimmed.startsWith('*') ||
+          trimmed.startsWith('-')) {
+        sims.add(trimmed.replaceAll(RegExp(r'^\*|^-'), '').trim());
+      }
+    }
+    if (sims.isEmpty) {
+      // fallback: pick one short sentence
+      final sentences = aiResponse.split(RegExp(r'[\.!?]\s'));
+      if (sentences.isNotEmpty) sims.add(sentences.first.trim());
+    }
+    return sims;
   }
 
   double _calculateChangePercentage(String text1, String text2) {
@@ -115,14 +152,41 @@ Format: Brief description | suggested page number
   }
 
   List<ScrollSuggestion> _parseScrollSuggestions(String aiResponse) {
-    // TODO: Parse AI response and extract suggestions
-    return [
-      ScrollSuggestion(
-        description: 'Continue to next chapter',
-        targetPage: 10,
-        relevanceScore: 0.9,
-      ),
-    ];
+    final suggestions = <ScrollSuggestion>[];
+    final lines = aiResponse.split('\n');
+    for (final l in lines) {
+      final parts = l.split('|');
+      if (parts.length >= 2) {
+        final desc = parts[0].trim();
+        final page = int.tryParse(parts[1].trim()) ?? 1;
+        suggestions.add(ScrollSuggestion(
+            description: desc, targetPage: page, relevanceScore: 0.7));
+      }
+    }
+    if (suggestions.isEmpty) {
+      suggestions.add(ScrollSuggestion(
+          description: 'Continue to next section',
+          targetPage: 1,
+          relevanceScore: 0.6));
+    }
+    return suggestions;
+  }
+
+  double _jaccardSimilarity(String a, String b) {
+    final setA = a
+        .toLowerCase()
+        .split(RegExp(r'\W+'))
+        .where((s) => s.isNotEmpty)
+        .toSet();
+    final setB = b
+        .toLowerCase()
+        .split(RegExp(r'\W+'))
+        .where((s) => s.isNotEmpty)
+        .toSet();
+    if (setA.isEmpty || setB.isEmpty) return 0.0;
+    final intersection = setA.intersection(setB).length.toDouble();
+    final union = setA.union(setB).length.toDouble();
+    return intersection / union;
   }
 }
 

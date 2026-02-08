@@ -1,3 +1,5 @@
+// ignore_for_file: unused_catch_stack
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';

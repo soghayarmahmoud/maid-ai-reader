@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:maid_ai_reader/core/constants/app_theme.dart' hide AppTheme;
 import 'package:maid_ai_reader/core/theme/app_theme.dart';
 import 'package:maid_ai_reader/core/widgets/glass_widgets.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 /// Theme Customization Page
 class ThemeCustomizationPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
         padding: const EdgeInsets.all(16),
         children: [
           // Theme Presets
-         const ModernSectionHeader(
+          const ModernSectionHeader(
             title: 'Color Themes',
             icon: Icons.palette,
           ),
@@ -109,7 +110,7 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
           const SizedBox(height: 32),
 
           // Custom Colors
-       const ModernSectionHeader(
+          const ModernSectionHeader(
             title: 'Custom Colors',
             icon: Icons.color_lens,
           ),
@@ -156,7 +157,7 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
           const SizedBox(height: 32),
 
           // Page Transitions
-         const ModernSectionHeader(
+          const ModernSectionHeader(
             title: 'Page Transitions',
             icon: Icons.animation,
           ),
@@ -187,7 +188,7 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
           const SizedBox(height: 32),
 
           // Preview
-         const ModernSectionHeader(
+          const ModernSectionHeader(
             title: 'Preview',
             icon: Icons.visibility,
           ),
@@ -264,17 +265,30 @@ class _ThemeCustomizationPageState extends State<ThemeCustomizationPage> {
       title: Text(label),
       trailing: GestureDetector(
         onTap: () {
-          // TODO: Open color picker dialog
+          // Open a color picker dialog and call the provided callback
+          Color temp = color;
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: Text('Pick $label'),
-              content: const Text(
-                  'Color picker would go here.\nUse flutter_colorpicker package.'),
+              content: SingleChildScrollView(
+                child: ColorPicker(
+                  pickerColor: temp,
+                  onColorChanged: (c) => temp = c,
+                  enableAlpha: false,
+                  showLabel: false,
+                ),
+              ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Close'),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel')),
+                ElevatedButton(
+                  onPressed: () {
+                    onColorChanged(temp);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Select'),
                 ),
               ],
             ),

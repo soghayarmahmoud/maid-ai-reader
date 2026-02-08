@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../services/pdf_editor_service.dart';
 import 'dart:io';
 
@@ -35,7 +36,7 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
     });
 
     final info = await _editorService.getPdfInfo(widget.pdfPath);
-    
+
     setState(() {
       _pdfInfo = info;
       _isLoading = false;
@@ -172,7 +173,8 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
             ),
             const SizedBox(height: 12),
             _buildInfoRow('Pages', '${_pdfInfo!.pageCount}'),
-            _buildInfoRow('File Size', '${(_pdfInfo!.fileSize / 1024 / 1024).toStringAsFixed(2)} MB'),
+            _buildInfoRow('File Size',
+                '${(_pdfInfo!.fileSize / 1024 / 1024).toStringAsFixed(2)} MB'),
             if (_pdfInfo!.title.isNotEmpty)
               _buildInfoRow('Title', _pdfInfo!.title),
             if (_pdfInfo!.author.isNotEmpty)
@@ -257,29 +259,50 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
     );
 
     if (result != null && result.files.single.path != null) {
-      // TODO: Show page selector and position picker
+      // Ask for target page and position (simple inputs)
+      final pageController = TextEditingController(text: '0');
+      final xController = TextEditingController(text: '50');
+      final yController = TextEditingController(text: '50');
+
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Insert Image'),
-          content: const Text('Select page and position for image'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                  controller: pageController,
+                  decoration:
+                      const InputDecoration(labelText: 'Page (0-based)')),
+              TextField(
+                  controller: xController,
+                  decoration: const InputDecoration(labelText: 'X position')),
+              TextField(
+                  controller: yController,
+                  decoration: const InputDecoration(labelText: 'Y position')),
+            ],
+          ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel')),
             ElevatedButton(
               onPressed: () async {
-                // Insert image at position
-                await _editorService.insertImage(
+                final page = int.tryParse(pageController.text) ?? 0;
+                final x = double.tryParse(xController.text) ?? 50;
+                final y = double.tryParse(yController.text) ?? 50;
+                final success = await _editorService.insertImage(
                   pdfPath: widget.pdfPath,
                   imagePath: result.files.single.path!,
-                  pageNumber: 0,
-                  x: 50,
-                  y: 50,
+                  pageNumber: page,
+                  x: x,
+                  y: y,
                 );
                 Navigator.pop(context);
-                _showSuccessSnackbar('Image inserted successfully');
+                if (success) {
+                  _showSuccessSnackbar('Image inserted successfully');
+                }
               },
               child: const Text('Insert'),
             ),
@@ -290,28 +313,187 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
   }
 
   Future<void> _showRotatePageDialog() async {
-    // TODO: Show page selector and rotation angle
-    _showSuccessSnackbar('Rotate page feature - Select page and angle');
+    final pageController = TextEditingController(text: '0');
+    int angleIndex = 0;
+    final angles = ['90', '180', '270'];
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rotate Page'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+                controller: pageController,
+                decoration: const InputDecoration(labelText: 'Page (0-based)')),
+            const SizedBox(height: 8),
+            DropdownButton<int>(
+              value: angleIndex,
+              items: List.generate(
+                  angles.length,
+                  (i) =>
+                      DropdownMenuItem(value: i, child: Text('${angles[i]}°'))),
+              onChanged: (v) => angleIndex = v ?? 0,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final page = int.tryParse(pageController.text) ?? 0;
+              final angle = angleIndex == 0
+                  ? PdfPageRotateAngle.rotateAngle90
+                  : angleIndex == 1
+                      ? PdfPageRotateAngle.rotateAngle180
+                      : PdfPageRotateAngle.rotateAngle270;
+              final success = await _editorService.rotatePage(
+                  pdfPath: widget.pdfPath, pageNumber: page, angle: angle);
+              Navigator.pop(context);
+              if (success) _showSuccessSnackbar('Page rotated');
+            },
+            child: const Text('Rotate'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showDeletePageDialog() async {
-    // TODO: Show page selector
-    _showSuccessSnackbar('Delete page feature - Select pages to delete');
+    final pagesController = TextEditingController(text: '0');
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Pages'),
+        content: TextField(
+            controller: pagesController,
+            decoration: const InputDecoration(
+                labelText: 'Pages (comma-separated, 0-based)')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final raw = pagesController.text
+                  .split(',')
+                  .map((s) => int.tryParse(s.trim()))
+                  .whereType<int>()
+                  .toList();
+              raw.sort();
+              for (int i = raw.length - 1; i >= 0; i--) {
+                await _editorService.deletePage(
+                    pdfPath: widget.pdfPath, pageNumber: raw[i]);
+              }
+              Navigator.pop(context);
+              _showSuccessSnackbar('Selected pages deleted');
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showReorderPagesDialog() async {
-    // TODO: Show drag-and-drop page reorder interface
-    _showSuccessSnackbar('Reorder pages feature - Drag to reorder');
+    final orderController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reorder Pages'),
+        content: TextField(
+            controller: orderController,
+            decoration: const InputDecoration(
+                labelText: 'New order (comma-separated indexes)')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final order = orderController.text
+                  .split(',')
+                  .map((s) => int.tryParse(s.trim()))
+                  .whereType<int>()
+                  .toList();
+              if (order.isNotEmpty) {
+                await _editorService.reorderPages(
+                    pdfPath: widget.pdfPath, newOrder: order);
+                Navigator.pop(context);
+                _showSuccessSnackbar('Pages reordered');
+              }
+            },
+            child: const Text('Reorder'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showCropPageDialog() async {
-    // TODO: Show page selector and crop area picker
-    _showSuccessSnackbar('Crop page feature - Select area to crop');
+    final pageController = TextEditingController(text: '0');
+    final lController = TextEditingController(text: '0');
+    final tController = TextEditingController(text: '0');
+    final wController = TextEditingController(text: '300');
+    final hController = TextEditingController(text: '400');
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Crop Page'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                  controller: pageController,
+                  decoration:
+                      const InputDecoration(labelText: 'Page (0-based)')),
+              TextField(
+                  controller: lController,
+                  decoration: const InputDecoration(labelText: 'Left')),
+              TextField(
+                  controller: tController,
+                  decoration: const InputDecoration(labelText: 'Top')),
+              TextField(
+                  controller: wController,
+                  decoration: const InputDecoration(labelText: 'Width')),
+              TextField(
+                  controller: hController,
+                  decoration: const InputDecoration(labelText: 'Height')),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final page = int.tryParse(pageController.text) ?? 0;
+              final left = double.tryParse(lController.text) ?? 0.0;
+              final top = double.tryParse(tController.text) ?? 0.0;
+              final width = double.tryParse(wController.text) ?? 300.0;
+              final height = double.tryParse(hController.text) ?? 400.0;
+              final rect = Rect.fromLTWH(left, top, width, height);
+              final success = await _editorService.cropPage(
+                  pdfPath: widget.pdfPath, pageNumber: page, cropBox: rect);
+              Navigator.pop(context);
+              if (success) _showSuccessSnackbar('Page cropped');
+            },
+            child: const Text('Crop'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showWatermarkDialog() async {
     final textController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -355,8 +537,63 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
     );
 
     if (result != null && result.files.single.path != null) {
-      // TODO: Show page and position selector
-      _showSuccessSnackbar('Signature feature - Select position');
+      final pageController = TextEditingController(text: '0');
+      final lController = TextEditingController(text: '50');
+      final tController = TextEditingController(text: '50');
+      final wController = TextEditingController(text: '150');
+      final hController = TextEditingController(text: '60');
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Add Signature'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                  controller: pageController,
+                  decoration:
+                      const InputDecoration(labelText: 'Page (0-based)')),
+              TextField(
+                  controller: lController,
+                  decoration: const InputDecoration(labelText: 'Left')),
+              TextField(
+                  controller: tController,
+                  decoration: const InputDecoration(labelText: 'Top')),
+              TextField(
+                  controller: wController,
+                  decoration: const InputDecoration(labelText: 'Width')),
+              TextField(
+                  controller: hController,
+                  decoration: const InputDecoration(labelText: 'Height')),
+            ],
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () async {
+                final page = int.tryParse(pageController.text) ?? 0;
+                final left = double.tryParse(lController.text) ?? 50.0;
+                final top = double.tryParse(tController.text) ?? 50.0;
+                final width = double.tryParse(wController.text) ?? 150.0;
+                final height = double.tryParse(hController.text) ?? 60.0;
+                final bounds = Rect.fromLTWH(left, top, width, height);
+                final success = await _editorService.addSignature(
+                  pdfPath: widget.pdfPath,
+                  signatureImagePath: result.files.single.path!,
+                  pageNumber: page,
+                  bounds: bounds,
+                );
+                Navigator.pop(context);
+                if (success) _showSuccessSnackbar('Signature added');
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -370,25 +607,99 @@ class _PdfEditorPageState extends State<PdfEditorPage> {
     if (result != null && result.files.isNotEmpty) {
       final paths = result.files.map((f) => f.path!).toList();
       paths.insert(0, widget.pdfPath);
-      
-      // TODO: Show merge preview and output path selector
-      _showSuccessSnackbar('Merge ${paths.length} PDFs');
+
+      final outputDir = File(widget.pdfPath).parent.path;
+      final outputPath =
+          '$outputDir/merged_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final resultPath = await _editorService.mergePdfs(
+          pdfPaths: paths, outputPath: outputPath);
+      if (resultPath != null) {
+        _showSuccessSnackbar('Merged PDFs to $resultPath');
+      }
     }
   }
 
   Future<void> _showSplitPdfDialog() async {
-    // TODO: Show page range selector
-    _showSuccessSnackbar('Split PDF feature - Select split points');
+    final splitsController = TextEditingController();
+    final outputDir = File(widget.pdfPath).parent.path;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Split PDF'),
+        content: TextField(
+            controller: splitsController,
+            decoration: const InputDecoration(
+                labelText: 'Split points (comma separated page indexes)')),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final points = splitsController.text
+                  .split(',')
+                  .map((s) => int.tryParse(s.trim()))
+                  .whereType<int>()
+                  .toList();
+              final outputs = await _editorService.splitPdf(
+                  pdfPath: widget.pdfPath,
+                  outputDir: outputDir,
+                  splitPoints: points);
+              Navigator.pop(context);
+              if (outputs.isNotEmpty) {
+                _showSuccessSnackbar('Split into ${outputs.length} files');
+              }
+            },
+            child: const Text('Split'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showFormFillingDialog() async {
-    // TODO: Show form fields editor
-    _showSuccessSnackbar('Form filling feature - Fill form fields');
+    final fieldController = TextEditingController();
+    final valueController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Fill Form Field'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+                controller: fieldController,
+                decoration: const InputDecoration(labelText: 'Field name')),
+            TextField(
+                controller: valueController,
+                decoration: const InputDecoration(labelText: 'Value')),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              final field = fieldController.text.trim();
+              final value = valueController.text;
+              if (field.isNotEmpty) {
+                final success = await _editorService.fillFormField(
+                    pdfPath: widget.pdfPath, fieldName: field, value: value);
+                Navigator.pop(context);
+                if (success) _showSuccessSnackbar('Form field updated');
+              }
+            },
+            child: const Text('Fill'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _exportPdf() async {
     final outputPath = widget.pdfPath.replaceAll('.pdf', '_edited.pdf');
-    
+
     final success = await _editorService.exportPdf(
       sourcePath: widget.pdfPath,
       destinationPath: outputPath,
