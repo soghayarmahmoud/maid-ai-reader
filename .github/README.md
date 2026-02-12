@@ -2,7 +2,7 @@
 
 This directory contains GitHub-specific configuration files and templates for the MAID AI Reader project.
 
-## 📁 Contents
+##  Contents
 
 ### ISSUE_TEMPLATE/
 
@@ -42,7 +42,6 @@ These templates help maintain consistency in:
 - Project organization
 - Team communication
 
-## 📝 Creating Issues
 
 ### Using Templates
 
