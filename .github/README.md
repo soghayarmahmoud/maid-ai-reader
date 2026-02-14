@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://images.pexels.com/photos/4855415/pexels-photo-4855415.jpeg" width="100%" alt="Header Image">
+</p>
+
+
 # .github Directory
 
 This directory contains GitHub-specific configuration files and templates for the MAID AI Reader project.
