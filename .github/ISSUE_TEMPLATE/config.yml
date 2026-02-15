@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/soghayarmahmoud/maid-ai-reader/blob/main/README.md
+    about: Check out the documentation for setup and usage instructions
+  - name: Contributing Guide
+    url: https://github.com/soghayarmahmoud/maid-ai-reader/blob/main/CONTRIBUTING.md
+    about: Learn how to contribute to MAID AI Reader
