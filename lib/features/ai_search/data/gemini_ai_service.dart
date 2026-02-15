@@ -1,16 +1,27 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 /// Google Gemini AI Service Implementation
 ///
 /// Uses systemInstruction on GenerativeModel for proper context injection.
 /// Gemini 1.5 Flash free tier: 15 requests/min, 1500/day.
+///
+/// API Key is loaded from environment variables (.env file) for security.
 class GeminiAiService {
   GenerativeModel? _model;
   ChatSession? _chatSession;
   bool _initialized = false;
 
-  /// Gemini API Key
-  static const String _apiKey = 'AIzaSyBePZxVvjM96UB24s9SwbCyQxEWpQ7MyeQ';
+  /// Get Gemini API Key from environment variable (loaded from .env file)
+  static String get _apiKey {
+    final key = dotenv.env['GEMINI_API_KEY'];
+    if (key == null || key.isEmpty) {
+      throw Exception(
+          'Gemini API key not found. Please add GEMINI_API_KEY to your .env file.\n'
+          'Get a free key from: https://makersuite.google.com/app/apikey');
+    }
+    return key;
+  }
 
   bool get isInitialized => _initialized;
 
@@ -166,7 +177,8 @@ $text
 
     try {
       final response = await _model!.generateContent([
-        Content.text('Explain this text in simple, easy-to-understand language:\n\n$text'),
+        Content.text(
+            'Explain this text in simple, easy-to-understand language:\n\n$text'),
       ]);
       return response.text ?? 'Unable to simplify';
     } catch (e) {
@@ -181,7 +193,8 @@ $text
 
     try {
       final response = await _model!.generateContent([
-        Content.text('Extract the key points from this text as a clear bulleted list:\n\n$text'),
+        Content.text(
+            'Extract the key points from this text as a clear bulleted list:\n\n$text'),
       ]);
       return response.text ?? 'Unable to extract key points';
     } catch (e) {
@@ -203,7 +216,10 @@ $text
       ]);
 
       final questionText = response.text ?? '';
-      return questionText.split('\n').where((q) => q.trim().isNotEmpty).toList();
+      return questionText
+          .split('\n')
+          .where((q) => q.trim().isNotEmpty)
+          .toList();
     } catch (e) {
       print('❌ Question generation error: $e');
       return ['Error generating questions: ${e.toString()}'];
@@ -227,7 +243,9 @@ $text
     final msg = e.toString().toLowerCase();
     if (msg.contains('api key') || msg.contains('permission')) {
       return '⚠️ API key error. Please check your Gemini API key configuration.';
-    } else if (msg.contains('network') || msg.contains('socket') || msg.contains('connection')) {
+    } else if (msg.contains('network') ||
+        msg.contains('socket') ||
+        msg.contains('connection')) {
       return '⚠️ Network error. Please check your internet connection and try again.';
     } else if (msg.contains('quota') || msg.contains('rate')) {
       return '⚠️ Rate limit reached. Please wait a moment and try again.';

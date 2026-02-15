@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
 import 'di/service_locator.dart';
@@ -10,6 +11,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    // Load environment variables (.env file)
+    await dotenv.load();
+    print('✓ Environment config loaded successfully');
+
     // Initialize Hive first
     await Hive.initFlutter();
     print('✓ Hive initialized successfully');

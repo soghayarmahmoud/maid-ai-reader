@@ -22,6 +22,7 @@ dependencies:
   flutter_animate: ^4.5.0
   flutter_bloc: ^9.1.1
   flutter_colorpicker: ^1.1.0
+  flutter_dotenv: ^5.2.1
   flutter_tts: ^4.2.0
   get_it: ^9.2.0
   glassmorphism: ^3.0.0
@@ -69,3 +70,4 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - .env
