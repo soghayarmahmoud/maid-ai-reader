@@ -77,8 +77,10 @@ android {
         resources.excludes.add("META-INF/NOTICE.txt")
     }
 }
-classpath 'com.google.gms:google-services:4.3.1'
+
 
 flutter {
     source = "../.."
 }
+
+apply plugin: 'com.google.gms.google-services'
