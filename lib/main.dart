@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
@@ -22,7 +23,10 @@ void main() async {
     // Initialize Ad Mob
     await AdMobService().initialize();
     print('✓ AdMob initialized successfully');
-
+    
+    // Initialize Firebase
+    await Firebase.initializeApp();
+    print('✓ Firebase initialized successfully');
     // Initialize dependencies
     await initializeDependencies();
     print('✓ Dependencies initialized successfully');
