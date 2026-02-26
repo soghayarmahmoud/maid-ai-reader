@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "846121806536",
+    "project_id": "maid-5bf4c",
+    "storage_bucket": "maid-5bf4c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846121806536:android:26684438225349d93e53fd",
+        "android_client_info": {
+          "package_name": "com.example.maid_ai_reader"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiOnLDiWFF2JYuKSbnbJEhnCZUisDv7AI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -135,6 +135,7 @@ api_keys.dart
 .firebase/
 firebase-debug.log
 firebase-debug.*.log
+*-firebase-adminsdk-*.json
 
 ############################################################
 # Documentation

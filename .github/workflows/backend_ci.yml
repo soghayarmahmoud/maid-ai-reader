@@ -1,0 +1,36 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - 'src/**'
+  pull_request:
+    paths:
+      - 'src/**'
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd src
+          npm install
+
+      - name: Run lint
+        run: |
+          cd src
+          npm run lint --if-present
+
+      - name: Run tests
+        run: |
+          cd src
+          npm test --if-present
