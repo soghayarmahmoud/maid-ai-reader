@@ -71,13 +71,13 @@ These templates help maintain consistency in:
 - **Actual Behavior:** What actually happens
 - **Environment:** Device, OS, app version
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **All Issues:** See [GITHUB_ISSUES.md](../GITHUB_ISSUES.md)
 - **Creation Guide:** See [HOW_TO_CREATE_ISSUES.md](../HOW_TO_CREATE_ISSUES.md)
 - **Contributing:** See [CONTRIBUTING.md](../CONTRIBUTING.md)
 
-## 🏷️ Label Guidelines
+##  Label Guidelines
 
 Use consistent labels across issues:
 
@@ -110,7 +110,7 @@ Use consistent labels across issues:
 - `in progress` - Being worked on
 - `blocked` - Cannot proceed
 
-## 💡 Best Practices
+##  Best Practices
 
 ### For Issue Creators
 
@@ -136,7 +136,7 @@ Use consistent labels across issues:
 4. **Maintain Order:** Keep issues organized
 5. **Archive Old:** Archive or close outdated issues
 
-## 🔄 Workflow
+##  Workflow
 
 Typical issue lifecycle:
 
@@ -150,7 +150,7 @@ Typical issue lifecycle:
 7. Closed      → Issue automatically closed
 ```
 
-## 📊 Issue Statistics
+## Issue Statistics
 
 Track these metrics:
 - Open vs. Closed issues
@@ -159,7 +159,7 @@ Track these metrics:
 - Issues per milestone
 - Issues per assignee
 
-## 🛠️ Customization
+##  Customization
 
 To modify templates:
 
@@ -168,7 +168,7 @@ To modify templates:
 3. Commit and push changes
 4. Templates update automatically
 
-## 📚 Resources
+##  Resources
 
 - [GitHub Issue Documentation](https://docs.github.com/en/issues)
 - [Issue Template Syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests)
