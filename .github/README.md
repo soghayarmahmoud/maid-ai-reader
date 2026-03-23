@@ -168,6 +168,12 @@ To modify templates:
 3. Commit and push changes
 4. Templates update automatically
 
+---
+
+## ⭐ If you like this project, consider sponsoring me
+
+---
+
 ##  Resources
 
 - [GitHub Issue Documentation](https://docs.github.com/en/issues)
